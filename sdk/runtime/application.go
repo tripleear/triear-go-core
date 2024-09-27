@@ -1,15 +1,16 @@
 package runtime
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"sync"
 
-	"github.com/casbin/casbin/v2"
-	"github.com/go-admin-team/go-admin-core/logger"
-	"github.com/go-admin-team/go-admin-core/storage"
-	"github.com/go-admin-team/go-admin-core/storage/queue"
-	"github.com/robfig/cron/v3"
+	"github.com/gin-gonic/gin"
+
+	casbin "github.com/casbin/casbin/v2"
+	cron "github.com/robfig/cron/v3"
+	"github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-admin-core/storage/queue"
 	"gorm.io/gorm"
 )
 

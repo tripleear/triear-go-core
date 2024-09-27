@@ -3,17 +3,18 @@ package antd_apis
 import (
 	"errors"
 	"fmt"
-	vd "github.com/bytedance/go-tagexpr/v2/validator"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"net/http"
 	"strconv"
 
+	vd "github.com/bytedance/go-tagexpr/v2/validator"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/tripleear/triear-go-admin-core/sdk/service"
+
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/logger"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/response/antd"
+	"github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-admin-core/sdk/api"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg/response/antd"
 	"gorm.io/gorm"
 )
 

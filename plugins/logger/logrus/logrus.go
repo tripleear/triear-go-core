@@ -7,7 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/go-admin-team/go-admin-core/logger"
+	"github.com/tripleear/triear-go-admin-core/logger"
 )
 
 type entryLogger interface {

@@ -1,12 +1,13 @@
 package flag
 
 import (
-	"dario.cat/mergo"
 	"errors"
 	"flag"
-	"github.com/go-admin-team/go-admin-core/config/source"
 	"strings"
 	"time"
+
+	"dario.cat/mergo"
+	"github.com/tripleear/triear-go-admin-core/config/source"
 )
 
 type flagsrc struct {

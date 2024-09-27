@@ -1,9 +1,10 @@
 package mycasbin
 
 import (
-	"github.com/go-admin-team/go-admin-core/logger"
 	"log/slog"
 	"sync/atomic"
+
+	"github.com/tripleear/triear-go-admin-core/logger"
 )
 
 // Logger is the implementation for a Logger using golang log.

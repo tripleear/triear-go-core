@@ -1,9 +1,9 @@
 package queue
 
 import (
-	"github.com/go-admin-team/go-admin-core/storage"
-	"github.com/go-admin-team/redisqueue/v2"
-	"github.com/redis/go-redis/v9"
+	redisqueue "github.com/go-admin-team/redisqueue/v2"
+	redis "github.com/redis/go-redis/v9"
+	"github.com/tripleear/triear-go-admin-core/storage"
 )
 
 // NewRedis redis模式

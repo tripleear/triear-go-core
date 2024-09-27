@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-admin-team/go-admin-core/config/source"
+	"github.com/tripleear/triear-go-admin-core/config/source"
 )
 
 func TestValues(t *testing.T) {

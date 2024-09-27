@@ -13,14 +13,14 @@ import (
 	"math"
 	"time"
 
-	pbErr "github.com/go-admin-team/go-admin-core/errors"
-	log "github.com/go-admin-team/go-admin-core/logger"
-	"github.com/go-admin-team/go-admin-core/server/grpc/interceptors/logging"
-	requesttag "github.com/go-admin-team/go-admin-core/server/grpc/interceptors/request_tag"
 	recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	pbErr "github.com/tripleear/triear-go-admin-core/errors"
+	log "github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/logging"
+	requesttag "github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/request_tag"
 	"google.golang.org/grpc"
 )
 

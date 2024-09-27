@@ -1,7 +1,7 @@
 package memory
 
 import (
-	"github.com/go-admin-team/go-admin-core/config/source"
+	"github.com/tripleear/triear-go-admin-core/config/source"
 )
 
 type watcher struct {
