@@ -10,7 +10,7 @@ type Application struct {
 	DemoMsg           string
 	EnableDP          bool
 	EnableSwaggerPage bool `json:"enableSwaggerPage" yaml:"enableSwaggerPage"`
-	EnableFormPage    bool `json:"enableFormPage" yaml:"enableFormPage"`
+	EnableFormGenPage bool `json:"enableFormGenPage" yaml:"enableFormGenPage"`
 }
 
 var ApplicationConfig = new(Application)
