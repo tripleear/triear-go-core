@@ -33,6 +33,9 @@ type GinJWTMiddleware struct {
 	// Duration that a jwt token is valid. Optional, defaults to one hour.
 	Timeout time.Duration
 
+	// Duration that a jwt refresh token is valid. Optional, defaults to Twice the Timeout above.
+	RefreshTimeout time.Duration
+
 	// This field allows clients to refresh their token until MaxRefresh has passed.
 	// Note that clients can refresh their token in the last moment of MaxRefresh.
 	// This means that the maximum validity timespan for a token is TokenTime + MaxRefresh.
@@ -64,7 +67,7 @@ type GinJWTMiddleware struct {
 	LoginResponse func(*gin.Context, int, string, time.Time)
 
 	// User can define own AntdLoginResponse func.
-	AntdLoginResponse func(*gin.Context, int, string, time.Time)
+	AntdLoginResponse func(*gin.Context, int, string, string, time.Time)
 
 	// User can define own RefreshResponse func.
 	RefreshResponse func(*gin.Context, int, string, time.Time)
@@ -327,11 +330,12 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	}
 
 	if mw.AntdLoginResponse == nil {
-		mw.AntdLoginResponse = func(c *gin.Context, code int, token string, expire time.Time) {
+		mw.AntdLoginResponse = func(c *gin.Context, code int, token, refreshTokenString string, expire time.Time) {
 			c.JSON(http.StatusOK, gin.H{
 				"code":             http.StatusOK,
 				"success":          true,
 				"token":            token,
+				"refreshToken":     refreshTokenString,
 				"currentAuthority": token,
 				"expire":           expire.Format(time.RFC3339),
 			})
@@ -463,7 +467,26 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	claims["exp"] = expire.Unix()
 	claims["orig_iat"] = mw.TimeFunc().Unix()
 	tokenString, err := mw.signedString(token)
+	if err != nil {
+		mw.unauthorized(c, http.StatusOK, mw.HTTPStatusMessageFunc(ErrFailedTokenCreation, c))
+		return
+	}
 
+	if mw.RefreshTimeout == 0 {
+		mw.RefreshTimeout = 2 * mw.Timeout
+	}
+	// Create the refresh token
+	refreshToken := jwt.New(jwt.GetSigningMethod(mw.SigningAlgorithm))
+	refreshClaims := refreshToken.Claims.(jwt.MapClaims)
+	if mw.PayloadFunc != nil {
+		for key, value := range mw.PayloadFunc(data) {
+			refreshClaims[key] = value
+		}
+	}
+	refreshExpire := mw.TimeFunc().Add(mw.RefreshTimeout)
+	refreshClaims["exp"] = refreshExpire.Unix()
+	refreshClaims["orig_iat"] = mw.TimeFunc().Unix()
+	refreshTokenString, err := mw.signedString(token)
 	if err != nil {
 		mw.unauthorized(c, http.StatusOK, mw.HTTPStatusMessageFunc(ErrFailedTokenCreation, c))
 		return
@@ -471,11 +494,11 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 
 	// set cookie
 	if mw.SendCookie {
-		maxage := int(expire.Unix() - time.Now().Unix())
+		maxAge := int(expire.Unix() - time.Now().Unix())
 		c.SetCookie(
 			mw.CookieName,
 			tokenString,
-			maxage,
+			maxAge,
 			"/",
 			mw.CookieDomain,
 			mw.SecureCookie,
@@ -483,7 +506,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 		)
 	}
 
-	mw.AntdLoginResponse(c, http.StatusOK, tokenString, expire)
+	mw.AntdLoginResponse(c, http.StatusOK, tokenString, refreshTokenString, expire)
 }
 
 func (mw *GinJWTMiddleware) signedString(token *jwt.Token) (string, error) {
