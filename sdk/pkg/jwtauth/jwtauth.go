@@ -67,10 +67,10 @@ type GinJWTMiddleware struct {
 	LoginResponse func(*gin.Context, int, string, time.Time)
 
 	// User can define own AntdLoginResponse func.
-	AntdLoginResponse func(*gin.Context, int, string, string, time.Time)
+	AntdLoginResponse func(*gin.Context, int, string, string, time.Time, time.Time)
 
 	// User can define own RefreshResponse func.
-	RefreshResponse func(*gin.Context, int, string, time.Time)
+	RefreshResponse func(*gin.Context, int, string, string, time.Time, time.Time)
 
 	// Set the identity handler function
 	IdentityHandler func(*gin.Context) interface{}
@@ -330,7 +330,7 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	}
 
 	if mw.AntdLoginResponse == nil {
-		mw.AntdLoginResponse = func(c *gin.Context, code int, token, refreshTokenString string, expire time.Time) {
+		mw.AntdLoginResponse = func(c *gin.Context, code int, token, refreshTokenString string, expire, refreshExpire time.Time) {
 			c.JSON(http.StatusOK, gin.H{
 				"code":             http.StatusOK,
 				"success":          true,
@@ -338,16 +338,19 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 				"refreshToken":     refreshTokenString,
 				"currentAuthority": token,
 				"expire":           expire.Format(time.RFC3339),
+				"refreshExpire":    refreshExpire.Format(time.RFC3339),
 			})
 		}
 	}
 
 	if mw.RefreshResponse == nil {
-		mw.RefreshResponse = func(c *gin.Context, code int, token string, expire time.Time) {
+		mw.RefreshResponse = func(c *gin.Context, code int, token, refreshTokenString string, expire, refreshExpire time.Time) {
 			c.JSON(http.StatusOK, gin.H{
-				"code":   http.StatusOK,
-				"token":  token,
-				"expire": expire.Format(time.RFC3339),
+				"code":          http.StatusOK,
+				"token":         token,
+				"refreshToken":  refreshTokenString,
+				"expire":        expire.Format(time.RFC3339),
+				"refreshExpire": refreshExpire.Format(time.RFC3339),
 			})
 		}
 	}
@@ -506,7 +509,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 		)
 	}
 
-	mw.AntdLoginResponse(c, http.StatusOK, tokenString, refreshTokenString, expire)
+	mw.AntdLoginResponse(c, http.StatusOK, tokenString, refreshTokenString, expire, refreshExpire)
 }
 
 func (mw *GinJWTMiddleware) signedString(token *jwt.Token) (string, error) {
@@ -524,17 +527,23 @@ func (mw *GinJWTMiddleware) signedString(token *jwt.Token) (string, error) {
 // Shall be put under an endpoint that is using the GinJWTMiddleware.
 // Reply will be of the form {"token": "TOKEN"}.
 func (mw *GinJWTMiddleware) RefreshHandler(c *gin.Context) {
-	tokenString, expire, err := mw.RefreshToken(c)
+	tokenString, expire, err := mw.RefreshToken(c, mw.Timeout)
 	if err != nil {
 		mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
 
-	mw.RefreshResponse(c, http.StatusOK, tokenString, expire)
+	refreshTokenString, refreshExpire, err := mw.RefreshToken(c, mw.RefreshTimeout)
+	if err != nil {
+		mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+		return
+	}
+
+	mw.RefreshResponse(c, http.StatusOK, tokenString, refreshTokenString, expire, refreshExpire)
 }
 
 // RefreshToken refresh token and check if token is expired
-func (mw *GinJWTMiddleware) RefreshToken(c *gin.Context) (string, time.Time, error) {
+func (mw *GinJWTMiddleware) RefreshToken(c *gin.Context, timeout time.Duration) (string, time.Time, error) {
 	claims, err := mw.CheckIfTokenExpire(c)
 	if err != nil {
 		return "", time.Now(), err
@@ -548,7 +557,7 @@ func (mw *GinJWTMiddleware) RefreshToken(c *gin.Context) (string, time.Time, err
 		newClaims[key] = claims[key]
 	}
 
-	expire := mw.TimeFunc().Add(mw.Timeout)
+	expire := mw.TimeFunc().Add(timeout)
 	newClaims["exp"] = expire.Unix()
 	newClaims["orig_iat"] = mw.TimeFunc().Unix()
 	tokenString, err := mw.signedString(newToken)
