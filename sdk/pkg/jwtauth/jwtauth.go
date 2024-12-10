@@ -486,7 +486,7 @@ func (mw *GinJWTMiddleware) LoginHandler(c *gin.Context) {
 	refreshExpire := mw.TimeFunc().Add(mw.RefreshTimeout)
 	refreshClaims["exp"] = refreshExpire.Unix()
 	refreshClaims["orig_iat"] = mw.TimeFunc().Unix()
-	refreshTokenString, err := mw.signedString(token)
+	refreshTokenString, err := mw.signedString(refreshToken)
 	if err != nil {
 		mw.unauthorized(c, http.StatusOK, mw.HTTPStatusMessageFunc(ErrFailedTokenCreation, c))
 		return
