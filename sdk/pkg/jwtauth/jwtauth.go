@@ -529,13 +529,13 @@ func (mw *GinJWTMiddleware) signedString(token *jwt.Token) (string, error) {
 func (mw *GinJWTMiddleware) RefreshHandler(c *gin.Context) {
 	tokenString, expire, err := mw.RefreshToken(c, mw.Timeout)
 	if err != nil {
-		mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
 
 	refreshTokenString, refreshExpire, err := mw.RefreshToken(c, mw.RefreshTimeout)
 	if err != nil {
-		mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
 
