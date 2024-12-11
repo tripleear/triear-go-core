@@ -41,7 +41,7 @@ func NotFound() *APIException {
 
 // 未知错误
 func UnknownError(message string) *APIException {
-	return newAPIException(http.StatusForbidden, message, nil, false)
+	return newAPIException(http.StatusInternalServerError, message, nil, false)
 }
 
 // 参数错误

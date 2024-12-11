@@ -400,12 +400,12 @@ func (mw *GinJWTMiddleware) MiddlewareFunc() gin.HandlerFunc {
 func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	claims, err := mw.GetClaimsFromJWT(c)
 	if err != nil {
-		mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
 	exp, err := claims.Exp()
 	if err != nil {
-		mw.unauthorized(c, http.StatusBadRequest, mw.HTTPStatusMessageFunc(err, c))
+		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
 	if exp < mw.TimeFunc().Unix() {
