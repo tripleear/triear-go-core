@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/tripleear/triear-go-admin-core/logger"
 )
 
 const JwtPayloadKey = "JWT_PAYLOAD"
@@ -407,6 +408,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	}
 	exp, err := claims.Exp()
 	if err != nil {
+		logger.Errorf("get jwt exp err: %v", err)
 		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
@@ -423,6 +425,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	}
 
 	if !mw.Authorizator(identity, c) {
+		logger.Warnf("mw authorized failed, identity: %+v", identity)
 		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(ErrForbidden, c))
 		return
 	}
