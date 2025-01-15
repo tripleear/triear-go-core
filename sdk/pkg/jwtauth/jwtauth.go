@@ -346,11 +346,13 @@ func (mw *GinJWTMiddleware) MiddlewareInit() error {
 	if mw.RefreshResponse == nil {
 		mw.RefreshResponse = func(c *gin.Context, code int, token, refreshTokenString string, expire, refreshExpire time.Time) {
 			c.JSON(http.StatusOK, gin.H{
-				"code":          http.StatusOK,
-				"token":         token,
-				"refreshToken":  refreshTokenString,
-				"expire":        expire.Format(time.RFC3339),
-				"refreshExpire": refreshExpire.Format(time.RFC3339),
+				"code":             http.StatusOK,
+				"success":          true,
+				"token":            token,
+				"refreshToken":     refreshTokenString,
+				"currentAuthority": token,
+				"expire":           expire.Format(time.RFC3339),
+				"refreshExpire":    refreshExpire.Format(time.RFC3339),
 			})
 		}
 	}
