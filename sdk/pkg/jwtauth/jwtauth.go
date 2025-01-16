@@ -403,6 +403,13 @@ func (mw *GinJWTMiddleware) MiddlewareFunc() gin.HandlerFunc {
 func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	claims, err := mw.GetClaimsFromJWT(c)
 	if err != nil {
+		var validationErr *jwt.ValidationError
+		ok := errors.As(err, &validationErr)
+		logger.Errorf("middlewareImpl GetClaimsFromJWT error: %v, validationErr: %+v", err, validationErr)
+		if !ok && validationErr.Errors&jwt.ValidationErrorExpired == jwt.ValidationErrorExpired {
+			mw.unauthorized(c, 6401, mw.HTTPStatusMessageFunc(ErrExpiredToken, c))
+			return
+		}
 		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
