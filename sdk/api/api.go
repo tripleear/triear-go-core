@@ -3,8 +3,6 @@ package api
 import (
 	"errors"
 	"fmt"
-	"github.com/tripleear/triear-go-admin-core/sdk/config"
-
 	"net/http"
 
 	vd "github.com/bytedance/go-tagexpr/v2/validator"
@@ -155,27 +153,14 @@ func (e *Api) DownloadExcel(fileName string, data []byte) {
 }
 
 func (e *Api) RunInTransaction(fn func(tx *gorm.DB) error) error {
-	if config.DatabaseConfig.Driver == "sqlite3" {
-		return fn(e.Orm) // SQLite 不支持事务，直接执行
-	}
-
-	tx := e.Orm.Begin()
-	if tx.Error != nil {
-		return tx.Error // 事务开启失败
-	}
-
-	// 统一事务处理
-	defer func() {
-		if r := recover(); r != nil { // 捕获 panic 并回滚
-			tx.Rollback()
-			panic(r) // 继续抛出 panic
-		}
-	}()
-
-	err := fn(tx)
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-	return tx.Commit().Error
+	return e.Orm.Transaction(func(tx *gorm.DB) error {
+		defer func() {
+			if r := recover(); r != nil {
+				tx.Rollback()
+				panic(r)
+			}
+		}()
+		// 执行传入的操作
+		return fn(tx)
+	})
 }
