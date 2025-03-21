@@ -153,14 +153,25 @@ func (e *Api) DownloadExcel(fileName string, data []byte) {
 }
 
 func (e *Api) RunInTransaction(fn func(tx *gorm.DB) error) error {
+	// 开始事务
 	return e.Orm.Transaction(func(tx *gorm.DB) error {
+		// 捕获 panic，确保即使发生 panic 也能回滚事务
 		defer func() {
 			if r := recover(); r != nil {
-				tx.Rollback()
-				panic(r)
+				tx.Rollback() // panic 时回滚
+				panic(r)      // 继续抛出 panic
 			}
 		}()
+
 		// 执行传入的操作
-		return fn(tx)
+		err := fn(tx)
+		if err != nil {
+			// 如果发生错误，回滚事务
+			tx.Rollback()
+			return err
+		}
+
+		// 如果没有错误，显式提交事务
+		return tx.Commit().Error
 	})
 }
