@@ -166,12 +166,8 @@ func (e *Api) RunInTransaction(fn func(tx *gorm.DB) error) error {
 		// 执行传入的操作
 		err := fn(tx)
 		if err != nil {
-			// 如果发生错误，回滚事务
-			tx.Rollback()
 			return err
 		}
-
-		// 如果没有错误，显式提交事务
-		return tx.Commit().Error
+		return nil
 	})
 }
