@@ -209,8 +209,8 @@ var (
 	IdentityKey = "identity"
 
 	// NiceKey 昵称
-	NiceKey      = "nice"
-	DataScopeKey = "datascope"
+	NiceKey       = "nice"
+	DataScopeKeys = "datascopes"
 
 	RKey = "r"
 
