@@ -62,18 +62,17 @@ func GetUserName(c *gin.Context) string {
 	return ExtractClaims(c).String("nice")
 }
 
-func GetRoleName(c *gin.Context) string {
-	return ExtractClaims(c).String("rolekey")
+func GetRoleKeys(c *gin.Context) []string {
+	return ExtractClaims(c).StringArray(jwt.RoleKeys)
 }
 
-func GetRoleId(c *gin.Context) int {
-	roleId, err := ExtractClaims(c).Int("roleid")
+func GetRoleIds(c *gin.Context) []int {
+	roleIds, err := ExtractClaims(c).IntArray(jwt.RoleIdKeys)
 	if err != nil {
-		fmt.Println(pkg.GetCurrentTimeStr() + " [WARING] " + c.Request.Method + " " + c.Request.URL.Path + " GetRoleId 缺少 roleid error: " + err.Error())
-		return 0
+		fmt.Println(pkg.GetCurrentTimeStr() + " [WARING] " + c.Request.Method + " " + c.Request.URL.Path + " GetRoleId 缺少 roleids error: " + err.Error())
+		return nil
 	}
-
-	return roleId
+	return roleIds
 }
 
 func GetDeptId(c *gin.Context) int {

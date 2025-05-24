@@ -214,19 +214,19 @@ var (
 
 	RKey = "r"
 
-	// RoleIdKey 角色id  Old
-	RoleIdKey = "roleid"
+	// RoleIdKeys 角色id  Old
+	RoleIdKeys = "roleids"
 
-	// RoleKey 角色名称  Old
-	RoleKey = "rolekey"
+	// RoleKeys 角色名称  Old
+	RoleKeys = "rolekeys"
 
-	// RoleNameKey 角色名称  Old
-	RoleNameKey = "rolename"
+	// RoleNameKeys 角色名称  Old
+	RoleNameKeys = "rolenames"
 
-	// RoleIdKey 部门id
+	// DeptId 部门id
 	DeptId = "deptId"
 
-	// RoleKey 部门名称
+	// DeptName 部门名称
 	DeptName = "deptName"
 )
 
