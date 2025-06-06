@@ -406,7 +406,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 		var validationErr *jwt.ValidationError
 		ok := errors.As(err, &validationErr)
 		logger.Errorf("middlewareImpl GetClaimsFromJWT error: %v, validationErr: %+v", err, validationErr)
-		if !ok && (validationErr.Error() == "Token is expired" || validationErr.Errors&jwt.ValidationErrorExpired == jwt.ValidationErrorExpired) {
+		if !ok && (strings.Contains(err.Error(), "Token is expired") || (validationErr != nil && validationErr.Errors&jwt.ValidationErrorExpired == jwt.ValidationErrorExpired)) {
 			mw.unauthorized(c, 6401, mw.HTTPStatusMessageFunc(ErrExpiredToken, c))
 			return
 		}
