@@ -17,7 +17,7 @@ import (
 )
 
 // Initialize the model from a string.
-var text = `
+var textOld = `
 [request_definition]
 r = sub, obj, act
 
@@ -29,6 +29,20 @@ e = some(where (p.eft == allow))
 
 [matchers]
 m = r.sub == p.sub && (keyMatch2(r.obj, p.obj) || keyMatch(r.obj, p.obj)) && (r.act == p.act || p.act == "*")
+`
+
+var text = `
+[request_definition]
+r = sub, obj, act
+
+[policy_definition]
+p = sub, obj, act
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = r.sub == p.sub && keyMatch3(r.obj, p.obj) && (r.act == p.act || p.act == "*")
 `
 
 var (
