@@ -48,10 +48,10 @@ m = r.sub == p.sub && customMatch(r.obj, p.obj) && (r.act == p.act || p.act == "
 `
 
 var (
-	enforcer *casbin.SyncedEnforcer
-	once     sync.Once
+	enforcer   *casbin.SyncedEnforcer
+	once       sync.Once
+	digitRegex = regexp.MustCompile(`^\d+$`)
 )
-var digitRegex = regexp.MustCompile(`^\d+$`)
 
 // 自定义匹配函数：支持 /:id 但要求实际值为纯数字
 func customMatch(requestPath, policyPath string) bool {
