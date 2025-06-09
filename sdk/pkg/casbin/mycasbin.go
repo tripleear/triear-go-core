@@ -1,6 +1,8 @@
 package mycasbin
 
 import (
+	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/casbin/casbin/v2"
@@ -42,13 +44,50 @@ p = sub, obj, act
 e = some(where (p.eft == allow))
 
 [matchers]
-m = r.sub == p.sub && keyMatch4(r.obj, p.obj) && (r.act == p.act || p.act == "*")
+m = r.sub == p.sub && customMatch(r.obj, p.obj) && (r.act == p.act || p.act == "*")
 `
 
 var (
 	enforcer *casbin.SyncedEnforcer
 	once     sync.Once
 )
+
+// 自定义匹配函数：支持 /:id 但要求实际值为纯数字
+func customMatch(requestPath, policyPath string) bool {
+	// 如果完全相等，直接通过
+	if requestPath == policyPath {
+		return true
+	}
+
+	// 拆分路径段
+	reqSegs := strings.Split(strings.Trim(requestPath, "/"), "/")
+	polSegs := strings.Split(strings.Trim(policyPath, "/"), "/")
+
+	if len(reqSegs) != len(polSegs) {
+		return false
+	}
+
+	// 逐段比较
+	for i := 0; i < len(reqSegs); i++ {
+		if strings.HasPrefix(polSegs[i], ":") {
+			// ✅ 只允许 ID 是纯数字
+			if !regexp.MustCompile(`^\d+$`).MatchString(reqSegs[i]) {
+				return false
+			}
+			continue
+		}
+		if reqSegs[i] != polSegs[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func CustomMatchFunc(args ...interface{}) (interface{}, error) {
+	reqPath := args[0].(string)
+	polPath := args[1].(string)
+	return customMatch(reqPath, polPath), nil
+}
 
 func Setup(db *gorm.DB, _ string) *casbin.SyncedEnforcer {
 	once.Do(func() {
@@ -65,6 +104,7 @@ func Setup(db *gorm.DB, _ string) *casbin.SyncedEnforcer {
 		if err != nil {
 			panic(err)
 		}
+		enforcer.AddFunction("customMatch", CustomMatchFunc)
 		err = enforcer.LoadPolicy()
 		if err != nil {
 			panic(err)
