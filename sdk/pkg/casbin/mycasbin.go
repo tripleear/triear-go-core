@@ -51,15 +51,14 @@ var (
 	enforcer *casbin.SyncedEnforcer
 	once     sync.Once
 )
+var digitRegex = regexp.MustCompile(`^\d+$`)
 
 // 自定义匹配函数：支持 /:id 但要求实际值为纯数字
 func customMatch(requestPath, policyPath string) bool {
-	// 如果完全相等，直接通过
 	if requestPath == policyPath {
 		return true
 	}
 
-	// 拆分路径段
 	reqSegs := strings.Split(strings.Trim(requestPath, "/"), "/")
 	polSegs := strings.Split(strings.Trim(policyPath, "/"), "/")
 
@@ -67,16 +66,12 @@ func customMatch(requestPath, policyPath string) bool {
 		return false
 	}
 
-	// 逐段比较
 	for i := 0; i < len(reqSegs); i++ {
 		if strings.HasPrefix(polSegs[i], ":") {
-			// ✅ 只允许 ID 是纯数字
-			if !regexp.MustCompile(`^\d+$`).MatchString(reqSegs[i]) {
+			if !digitRegex.MatchString(reqSegs[i]) {
 				return false
 			}
-			continue
-		}
-		if reqSegs[i] != polSegs[i] {
+		} else if reqSegs[i] != polSegs[i] {
 			return false
 		}
 	}
