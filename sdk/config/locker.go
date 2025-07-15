@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/redis/go-redis/v9"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
 	"github.com/tripleear/triear-go-admin-core/storage"
 	"github.com/tripleear/triear-go-admin-core/storage/locker"
 )
@@ -26,7 +26,7 @@ func (e Locker) Setup() (storage.AdapterLocker, error) {
 			if err != nil {
 				return nil, err
 			}
-			client = redis.NewClient(options)
+			client = wrapper.NewRedisClient(options)
 			_redis = client
 		}
 		return locker.NewRedis(client), nil
