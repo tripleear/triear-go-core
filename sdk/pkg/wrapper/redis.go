@@ -1,8 +1,7 @@
 package wrapper
 
 import (
-	"errors"
-	"github.com/gin-gonic/gin"
+	"context"
 	redis "github.com/redis/go-redis/v9"
 	"time"
 )
@@ -21,187 +20,105 @@ func (cli *RedisClient) GetRawRedis() *redis.Client {
 	return cli.client
 }
 
-func GetCachePrefixFromContext(ctx *gin.Context) (string, error) {
-	cachePrefix, ok := ctx.Get("cachePrefix")
-	if !ok {
-		return "", errors.New("cachePrefix not found in context")
+func GetCachePrefixFromContext(ctx context.Context) string {
+	if v, ok := ctx.Value("cachePrefix").(string); ok {
+		return v
 	}
-	return cachePrefix.(string), nil
+	return ""
 }
 
-func (cli *RedisClient) Set(ctx *gin.Context, key string, value any, expiration time.Duration) error {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return err
-	}
+func (cli *RedisClient) Set(ctx context.Context, key string, value any, expiration time.Duration) *redis.StatusCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	return cli.client.Set(ctx, fullKey, value, expiration).Err()
+	return cli.client.Set(ctx, fullKey, value, expiration)
 }
 
-func (cli *RedisClient) Del(ctx *gin.Context, keys ...string) error {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return err
-	}
+func (cli *RedisClient) Del(ctx context.Context, keys ...string) *redis.IntCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 
 	prefixedKeys := make([]string, len(keys))
 	for i, key := range keys {
 		prefixedKeys[i] = cachePrefix + key
 	}
-	return cli.client.Del(ctx, prefixedKeys...).Err()
+	return cli.client.Del(ctx, prefixedKeys...)
 }
 
-func (cli *RedisClient) Get(ctx *gin.Context, k string) (*redis.StringCmd, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
+func (cli *RedisClient) Get(ctx context.Context, k string) *redis.StringCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + k
 	v := cli.client.Get(ctx, fullKey)
-	if v.Err() != nil {
-		return nil, v.Err()
-	}
-	return v, nil
+	return v
 }
 
-func (cli *RedisClient) GetInt(ctx *gin.Context, k string) (int, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return 0, err
-	}
-	fullKey := cachePrefix + k
-	vCmd := cli.client.Get(ctx, fullKey)
-	if vCmd.Err() != nil {
-		return 0, vCmd.Err()
-	}
-	v, err := vCmd.Int()
-	return v, err
-}
-
-func (cli *RedisClient) GetString(ctx *gin.Context, k string) (string, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return "", err
-	}
-	fullKey := cachePrefix + k
-	vCmd := cli.client.Get(ctx, fullKey)
-	if vCmd.Err() != nil {
-		return "", vCmd.Err()
-	}
-	v, err := vCmd.Result()
-	return v, err
-}
-
-func (cli *RedisClient) HSet(ctx *gin.Context, key string, values ...any) (int64, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return 0, err
-	}
+func (cli *RedisClient) HSet(ctx context.Context, key string, values ...any) *redis.IntCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
 	vCmd := cli.client.HSet(ctx, fullKey, values...)
-	if vCmd.Err() != nil {
-		return 0, vCmd.Err()
-	}
-	v, err := vCmd.Result()
-	return v, err
+	return vCmd
 }
 
-func (cli *RedisClient) HGetAll(ctx *gin.Context, key string) (map[string]string, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
+func (cli *RedisClient) HMSet(ctx context.Context, key string, values ...any) *redis.BoolCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	v, err := cli.client.HGetAll(ctx, fullKey).Result()
-	return v, err
+	vCmd := cli.client.HMSet(ctx, fullKey, values...)
+	return vCmd
 }
 
-func (cli *RedisClient) HDel(ctx *gin.Context, key string, fields ...string) (int64, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return 0, err
-	}
+func (cli *RedisClient) Rename(ctx context.Context, key, newkey string) *redis.StatusCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	v, err := cli.client.HDel(ctx, fullKey, fields...).Result()
-	return v, err
+	newFullKey := cachePrefix + key
+	vCmd := cli.client.Rename(ctx, fullKey, newFullKey)
+	return vCmd
 }
 
-func (cli *RedisClient) HGet(ctx *gin.Context, key, field string) (string, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return "", err
-	}
+func (cli *RedisClient) HGetAll(ctx context.Context, key string) *redis.MapStringStringCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	v, err := cli.client.HGet(ctx, fullKey, field).Result()
-	if err != nil {
-		return "", err
-	}
-	return v, nil
+	v := cli.client.HGetAll(ctx, fullKey)
+	return v
 }
 
-func (cli *RedisClient) HMGet(ctx *gin.Context, key string, fields ...string) ([]any, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
+func (cli *RedisClient) HDel(ctx context.Context, key string, fields ...string) *redis.IntCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	v, err := cli.client.HMGet(ctx, fullKey, fields...).Result()
-	if err != nil {
-		return nil, err
-	}
-	return v, nil
+	return cli.client.HDel(ctx, fullKey, fields...)
 }
 
-func (cli *RedisClient) Incr(ctx *gin.Context, key string) (int64, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return 0, err
-	}
+func (cli *RedisClient) HGet(ctx context.Context, key, field string) *redis.StringCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	v, err := cli.client.Incr(ctx, fullKey).Result()
-	if err != nil {
-		return 0, err
-	}
-	return v, nil
+	return cli.client.HGet(ctx, fullKey, field)
 }
 
-func (cli *RedisClient) Expire(ctx *gin.Context, key string, expiration time.Duration) (bool, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return false, err
-	}
+func (cli *RedisClient) HMGet(ctx context.Context, key string, fields ...string) *redis.SliceCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	v, err := cli.client.Expire(ctx, fullKey, expiration).Result()
-	if err != nil {
-		return false, err
-	}
-	return v, nil
+	return cli.client.HMGet(ctx, fullKey, fields...)
 }
 
-func (cli *RedisClient) ZRange(ctx *gin.Context, key string, start, stop int64) ([]string, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
+func (cli *RedisClient) Incr(ctx context.Context, key string) *redis.IntCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
+	fullKey := cachePrefix + key
+	return cli.client.Incr(ctx, fullKey)
+}
+
+func (cli *RedisClient) Expire(ctx context.Context, key string, expiration time.Duration) *redis.BoolCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
+	fullKey := cachePrefix + key
+	return cli.client.Expire(ctx, fullKey, expiration)
+}
+
+func (cli *RedisClient) ZRange(ctx context.Context, key string, start, stop int64) *redis.StringSliceCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
 	vCmd := cli.client.ZRange(ctx, fullKey, start, stop)
-	if vCmd.Err() != nil {
-		return nil, vCmd.Err()
-	}
-	v, err := vCmd.Result()
-	return v, err
+	return vCmd
 }
 
-func (cli *RedisClient) ZCard(ctx *gin.Context, key string) (int64, error) {
-	cachePrefix, err := GetCachePrefixFromContext(ctx)
-	if err != nil {
-		return 0, err
-	}
+func (cli *RedisClient) ZCard(ctx context.Context, key string) *redis.IntCmd {
+	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
 	vCmd := cli.client.ZCard(ctx, fullKey)
-	if vCmd.Err() != nil {
-		return 0, vCmd.Err()
-	}
-	v, err := vCmd.Result()
-	return v, err
+	return vCmd
 }
