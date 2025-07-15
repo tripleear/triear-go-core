@@ -7,6 +7,7 @@ type Database struct {
 	ConnMaxLifeTime int
 	MaxIdleConns    int
 	MaxOpenConns    int
+	CachePrefix     string
 	Registers       []DBResolverConfig
 }
 
