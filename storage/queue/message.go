@@ -1,6 +1,7 @@
 package queue
 
 import (
+	redisqueue "github.com/nyl1001/redisqueue/v2"
 	"sync"
 
 	"github.com/tripleear/triear-go-admin-core/storage"

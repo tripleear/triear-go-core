@@ -2,6 +2,7 @@ package queue
 
 import (
 	"fmt"
+	redisqueue "github.com/nyl1001/redisqueue/v2"
 	"log"
 	"sync"
 	"testing"

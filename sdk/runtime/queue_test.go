@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"fmt"
+	redisqueue "github.com/nyl1001/redisqueue/v2"
 	"reflect"
 	"testing"
 	"time"
