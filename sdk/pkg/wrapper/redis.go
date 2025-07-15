@@ -124,11 +124,17 @@ func (cli *RedisClient) Move(ctx context.Context, key string, db int) *redis.Boo
 }
 
 func (cli *RedisClient) LMove(ctx context.Context, source, destination, srcpos, destpos string) *redis.StringCmd {
-	return cli.client.LMove(ctx, source, destination, srcpos, destpos)
+	cachePrefix := GetCachePrefixFromContext(ctx)
+	sourceFullKey := cachePrefix + source
+	destFullKey := cachePrefix + destination
+	return cli.client.LMove(ctx, sourceFullKey, destFullKey, srcpos, destpos)
 }
 
 func (cli *RedisClient) BLMove(ctx context.Context, source, destination, srcpos, destpos string, timeout time.Duration) *redis.StringCmd {
-	return cli.client.BLMove(ctx, source, destination, srcpos, destpos, timeout)
+	cachePrefix := GetCachePrefixFromContext(ctx)
+	sourceFullKey := cachePrefix + source
+	destFullKey := cachePrefix + destination
+	return cli.client.BLMove(ctx, sourceFullKey, destFullKey, srcpos, destpos, timeout)
 }
 
 func (cli *RedisClient) ObjectRefCount(ctx context.Context, key string) *redis.IntCmd {
