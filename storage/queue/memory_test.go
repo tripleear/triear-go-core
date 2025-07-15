@@ -7,8 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-admin-team/redisqueue/v2"
-
 	"github.com/tripleear/triear-go-admin-core/storage"
 )
 
