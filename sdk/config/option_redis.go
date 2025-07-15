@@ -6,20 +6,21 @@ import (
 	"crypto/x509"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
 	"io/ioutil"
 )
 
-var _redis *redis.Client
+var _redis *wrapper.RedisClient
 
 // GetRedisClient 获取redis客户端
-func GetRedisClient() *redis.Client {
+func GetRedisClient() *wrapper.RedisClient {
 	return _redis
 }
 
 // SetRedisClient 设置redis客户端
-func SetRedisClient(c *redis.Client) {
+func SetRedisClient(c *wrapper.RedisClient) {
 	if _redis != nil && _redis != c {
-		_redis.Shutdown(context.TODO())
+		_redis.GetRawRedis().Shutdown(context.TODO())
 	}
 	_redis = c
 }

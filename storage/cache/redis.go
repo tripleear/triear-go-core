@@ -3,13 +3,14 @@ package cache
 import (
 	"context"
 	"github.com/redis/go-redis/v9"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
 	"time"
 )
 
 // NewRedis redis模式
-func NewRedis(client *redis.Client, options *redis.Options) (*Redis, error) {
+func NewRedis(client *wrapper.RedisClient, options *redis.Options) (*Redis, error) {
 	if client == nil {
-		client = redis.NewClient(options)
+		client = wrapper.NewRedisClient(options)
 	}
 	r := &Redis{
 		client: client,
@@ -23,7 +24,11 @@ func NewRedis(client *redis.Client, options *redis.Options) (*Redis, error) {
 
 // Redis cache implement
 type Redis struct {
-	client *redis.Client
+	client *wrapper.RedisClient
+}
+
+func (r *Redis) GetRawRedis() *redis.Client {
+	return r.client.GetRawRedis()
 }
 
 func (*Redis) String() string {
@@ -33,50 +38,50 @@ func (*Redis) String() string {
 // connect connect test
 func (r *Redis) connect() error {
 	var err error
-	_, err = r.client.Ping(context.TODO()).Result()
+	_, err = r.GetRawRedis().Ping(context.TODO()).Result()
 	return err
 }
 
 // Get from key
 func (r *Redis) Get(key string) (string, error) {
-	return r.client.Get(context.TODO(), key).Result()
+	return r.GetRawRedis().Get(context.TODO(), key).Result()
 }
 
 // Set value with key and expire time
 func (r *Redis) Set(key string, val interface{}, expire int) error {
-	return r.client.Set(context.TODO(), key, val, time.Duration(expire)*time.Second).Err()
+	return r.GetRawRedis().Set(context.TODO(), key, val, time.Duration(expire)*time.Second).Err()
 }
 
 // Del delete key in redis
 func (r *Redis) Del(key string) error {
-	return r.client.Del(context.TODO(), key).Err()
+	return r.GetRawRedis().Del(context.TODO(), key).Err()
 }
 
 // HashGet from key
 func (r *Redis) HashGet(hk, key string) (string, error) {
-	return r.client.HGet(context.TODO(), hk, key).Result()
+	return r.GetRawRedis().HGet(context.TODO(), hk, key).Result()
 }
 
 // HashDel delete key in specify redis's hashtable
 func (r *Redis) HashDel(hk, key string) error {
-	return r.client.HDel(context.TODO(), hk, key).Err()
+	return r.GetRawRedis().HDel(context.TODO(), hk, key).Err()
 }
 
 // Increase
 func (r *Redis) Increase(key string) error {
-	return r.client.Incr(context.TODO(), key).Err()
+	return r.GetRawRedis().Incr(context.TODO(), key).Err()
 }
 
 func (r *Redis) Decrease(key string) error {
-	return r.client.Decr(context.TODO(), key).Err()
+	return r.GetRawRedis().Decr(context.TODO(), key).Err()
 }
 
 // Set ttl
 func (r *Redis) Expire(key string, dur time.Duration) error {
-	return r.client.Expire(context.TODO(), key, dur).Err()
+	return r.GetRawRedis().Expire(context.TODO(), key, dur).Err()
 }
 
 // GetClient 暴露原生client
-func (r *Redis) GetClient() *redis.Client {
+func (r *Redis) GetClient() *wrapper.RedisClient {
 	return r.client
 }
