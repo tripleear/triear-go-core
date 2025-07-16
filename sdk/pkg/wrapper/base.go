@@ -3,6 +3,7 @@ package wrapper
 import (
 	"context"
 	redis "github.com/redis/go-redis/v9"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg/consts"
 )
 
 type RedisClient struct {
@@ -35,7 +36,7 @@ func (cli *RedisClient) GetRawRedis() *redis.Client {
 }
 
 func GetCachePrefixFromContext(ctx context.Context) string {
-	if v, ok := ctx.Value("cachePrefix").(string); ok {
+	if v, ok := ctx.Value(consts.ContextCachePrefixKey).(string); ok {
 		return v
 	}
 	return ""

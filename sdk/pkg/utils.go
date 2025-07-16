@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"errors"
+	"github.com/tripleear/triear-go-admin-core/sdk/pkg/consts"
 	"log"
 	"runtime"
 	"strconv"
@@ -69,7 +70,7 @@ func GenerateMsgIDFromContext(c *gin.Context) string {
 
 // GetOrm 获取orm连接
 func GetOrm(c *gin.Context) (*gorm.DB, error) {
-	idb, exist := c.Get("db")
+	idb, exist := c.Get(consts.ContextDbKey)
 	if !exist {
 		return nil, errors.New("db connect not exist")
 	}
