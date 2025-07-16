@@ -181,7 +181,7 @@ func (cli *RedisClient) RandomKey(ctx context.Context) *redis.StringCmd {
 func (cli *RedisClient) Rename(ctx context.Context, key, newkey string) *redis.StatusCmd {
 	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
-	newFullKey := cachePrefix + key
+	newFullKey := cachePrefix + newkey
 	vCmd := cli.client.Rename(ctx, fullKey, newFullKey)
 	return vCmd
 }
