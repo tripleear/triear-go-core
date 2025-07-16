@@ -8,6 +8,7 @@ type Database struct {
 	MaxIdleConns    int
 	MaxOpenConns    int
 	CachePrefix     string
+	EsPrefix        string
 	Registers       []DBResolverConfig
 }
 
