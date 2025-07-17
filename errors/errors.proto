@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package errors;
 
-option go_package = "github.com/tripleear/triear-go-admin-core/errors";
+option go_package = "github.com/tripleear/triear-go-core/errors";
 
 message Error {
   // Success if request is success

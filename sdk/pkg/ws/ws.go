@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg"
+	"github.com/tripleear/triear-go-core/sdk/pkg"
 )
 
 // Manager 所有 websocket 信息

@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/storage"
 	"gorm.io/gorm"
 )
 

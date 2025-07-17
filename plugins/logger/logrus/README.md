@@ -1,6 +1,6 @@
 # logrus
 
-[logrus](https://github.com/sirupsen/logrus) logger implementation for __go-admin__ [meta logger](https://github.com/tripleear/triear-go-admin-core/tree/master/logger).
+[logrus](https://github.com/sirupsen/logrus) logger implementation for __triear-go__ [meta logger](https://github.com/tripleear/triear-go-core/tree/master/logger).
 
 ## Usage
 
@@ -8,7 +8,7 @@
 import (
 	"os"
 	"github.com/sirupsen/logrus"
-	"github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-core/logger"
 )
 
 func ExampleWithOutput() {

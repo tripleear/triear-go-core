@@ -13,8 +13,8 @@ import (
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/server"
+	log "github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/server"
 )
 
 type Server struct {

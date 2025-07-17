@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/tripleear/triear-go-admin-core/storage"
-	"github.com/tripleear/triear-go-admin-core/storage/cache"
+	"github.com/tripleear/triear-go-core/storage"
+	"github.com/tripleear/triear-go-core/storage/cache"
 )
 
 type Cache struct {

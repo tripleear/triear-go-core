@@ -3,7 +3,7 @@ package wrapper
 import (
 	"context"
 	redis "github.com/redis/go-redis/v9"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/consts"
+	"github.com/tripleear/triear-go-core/sdk/pkg/consts"
 )
 
 type RedisClient struct {

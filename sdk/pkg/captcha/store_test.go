@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/mojocn/base64Captcha"
-	"github.com/tripleear/triear-go-admin-core/storage"
-	"github.com/tripleear/triear-go-admin-core/storage/cache"
+	"github.com/tripleear/triear-go-core/storage"
+	"github.com/tripleear/triear-go-core/storage/cache"
 )
 
 var _expiration = 6000

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 type memory struct {

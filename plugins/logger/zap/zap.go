@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-core/logger"
 )
 
 type zaplog struct {

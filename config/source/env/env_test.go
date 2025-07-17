@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 func TestEnv_Read(t *testing.T) {

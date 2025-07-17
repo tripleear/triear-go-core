@@ -1,9 +1,9 @@
 package config
 
 import (
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
-	"github.com/tripleear/triear-go-admin-core/storage"
-	"github.com/tripleear/triear-go-admin-core/storage/locker"
+	"github.com/tripleear/triear-go-core/sdk/pkg/wrapper"
+	"github.com/tripleear/triear-go-core/storage"
+	"github.com/tripleear/triear-go-core/storage/locker"
 )
 
 var LockerConfig = new(Locker)

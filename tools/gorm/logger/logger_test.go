@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	logCore "github.com/tripleear/triear-go-admin-core/logger"
+	logCore "github.com/tripleear/triear-go-core/logger"
 	"gorm.io/gorm/logger"
 )
 

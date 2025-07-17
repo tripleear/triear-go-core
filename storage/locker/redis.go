@@ -2,7 +2,7 @@ package locker
 
 import (
 	"context"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
+	"github.com/tripleear/triear-go-core/sdk/pkg/wrapper"
 	"time"
 
 	"github.com/bsm/redislock"

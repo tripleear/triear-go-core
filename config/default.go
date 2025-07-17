@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/config/loader"
-	"github.com/tripleear/triear-go-admin-core/config/loader/memory"
-	"github.com/tripleear/triear-go-admin-core/config/reader"
-	"github.com/tripleear/triear-go-admin-core/config/reader/json"
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/loader"
+	"github.com/tripleear/triear-go-core/config/loader/memory"
+	"github.com/tripleear/triear-go-core/config/reader"
+	"github.com/tripleear/triear-go-core/config/reader/json"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 type config struct {

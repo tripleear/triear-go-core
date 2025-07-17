@@ -14,9 +14,9 @@ import (
 
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-	log "github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/logging"
-	reqtags "github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/request_tag"
+	log "github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/server/grpc/interceptors/logging"
+	reqtags "github.com/tripleear/triear-go-core/server/grpc/interceptors/request_tag"
 	"google.golang.org/grpc"
 )
 

@@ -12,8 +12,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/logging/ctxlog"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/server/grpc/interceptors/logging/ctxlog"
 	"google.golang.org/grpc"
 )
 

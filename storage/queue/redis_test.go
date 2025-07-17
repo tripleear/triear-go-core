@@ -9,7 +9,7 @@ import (
 	redisqueue "github.com/nyl1001/redisqueue/v2"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/storage"
 )
 
 func TestRedis_Append(t *testing.T) {

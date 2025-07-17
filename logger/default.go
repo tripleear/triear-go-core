@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	dlog "github.com/tripleear/triear-go-admin-core/debug/log"
+	dlog "github.com/tripleear/triear-go-core/debug/log"
 )
 
 func init() {

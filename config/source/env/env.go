@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"dario.cat/mergo"
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 var (

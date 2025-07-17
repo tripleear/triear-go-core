@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/config"
-	"github.com/tripleear/triear-go-admin-core/config/source/file"
+	"github.com/tripleear/triear-go-core/config"
+	"github.com/tripleear/triear-go-core/config/source/file"
 )
 
 func TestConfig(t *testing.T) {

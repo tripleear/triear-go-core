@@ -1,11 +1,11 @@
 package reader
 
 import (
-	"github.com/tripleear/triear-go-admin-core/config/encoder"
-	"github.com/tripleear/triear-go-admin-core/config/encoder/json"
-	"github.com/tripleear/triear-go-admin-core/config/encoder/toml"
-	"github.com/tripleear/triear-go-admin-core/config/encoder/xml"
-	"github.com/tripleear/triear-go-admin-core/config/encoder/yaml"
+	"github.com/tripleear/triear-go-core/config/encoder"
+	"github.com/tripleear/triear-go-core/config/encoder/json"
+	"github.com/tripleear/triear-go-core/config/encoder/toml"
+	"github.com/tripleear/triear-go-core/config/encoder/xml"
+	"github.com/tripleear/triear-go-core/config/encoder/yaml"
 )
 
 type Options struct {

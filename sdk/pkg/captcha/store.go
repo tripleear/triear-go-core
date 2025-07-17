@@ -2,7 +2,7 @@ package captcha
 
 import (
 	"github.com/mojocn/base64Captcha"
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/storage"
 )
 
 type cacheStore struct {

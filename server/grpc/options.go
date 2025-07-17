@@ -17,10 +17,10 @@ import (
 	ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	pbErr "github.com/tripleear/triear-go-admin-core/errors"
-	log "github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/logging"
-	requesttag "github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/request_tag"
+	pbErr "github.com/tripleear/triear-go-core/errors"
+	log "github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/server/grpc/interceptors/logging"
+	requesttag "github.com/tripleear/triear-go-core/server/grpc/interceptors/request_tag"
 	"google.golang.org/grpc"
 )
 

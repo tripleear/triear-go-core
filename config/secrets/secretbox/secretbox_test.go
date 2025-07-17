@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/tripleear/triear-go-admin-core/config/secrets"
+	"github.com/tripleear/triear-go-core/config/secrets"
 )
 
 func TestSecretBox(t *testing.T) {

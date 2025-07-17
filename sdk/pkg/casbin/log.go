@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"sync/atomic"
 
-	"github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-core/logger"
 )
 
 // Logger is the implementation for a Logger using golang log.

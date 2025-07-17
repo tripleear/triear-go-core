@@ -17,7 +17,7 @@ type Options struct {
 
 func setDefault() Options {
 	return Options{
-		path:       "/tmp/go-admin",
+		path:       "/tmp/triear-go-core",
 		suffix:     "log",
 		daysToKeep: 7,
 	}

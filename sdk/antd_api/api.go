@@ -8,13 +8,13 @@ import (
 
 	vd "github.com/bytedance/go-tagexpr/v2/validator"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/tripleear/triear-go-admin-core/sdk/service"
+	"github.com/tripleear/triear-go-core/sdk/service"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/sdk/api"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/response/antd"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/sdk/api"
+	"github.com/tripleear/triear-go-core/sdk/pkg"
+	"github.com/tripleear/triear-go-core/sdk/pkg/response/antd"
 	"gorm.io/gorm"
 )
 

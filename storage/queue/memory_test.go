@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/storage"
 )
 
 func TestMemory_Append(t *testing.T) {

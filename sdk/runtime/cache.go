@@ -6,7 +6,7 @@ import (
 
 	"github.com/chanxuehong/wechat/oauth2"
 
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/storage"
 )
 
 const (

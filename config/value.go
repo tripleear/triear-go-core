@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/config/reader"
+	"github.com/tripleear/triear-go-core/config/reader"
 )
 
 type value struct{}

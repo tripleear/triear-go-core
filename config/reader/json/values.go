@@ -8,8 +8,8 @@ import (
 	"time"
 
 	simple "github.com/bitly/go-simplejson"
-	"github.com/tripleear/triear-go-admin-core/config/reader"
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/reader"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 type jsonValues struct {

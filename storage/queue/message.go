@@ -4,7 +4,7 @@ import (
 	redisqueue "github.com/nyl1001/redisqueue/v2"
 	"sync"
 
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/storage"
 )
 
 type Message struct {

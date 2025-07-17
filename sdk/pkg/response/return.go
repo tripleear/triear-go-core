@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg"
+	"github.com/tripleear/triear-go-core/sdk/pkg"
 )
 
 var Default = &response{}

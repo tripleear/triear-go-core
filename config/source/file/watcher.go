@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 type watcher struct {

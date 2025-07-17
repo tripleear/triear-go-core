@@ -3,7 +3,7 @@ package xml
 import (
 	"encoding/xml"
 
-	"github.com/tripleear/triear-go-admin-core/config/encoder"
+	"github.com/tripleear/triear-go-core/config/encoder"
 )
 
 type xmlEncoder struct{}

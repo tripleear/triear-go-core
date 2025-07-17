@@ -10,9 +10,9 @@ import (
 	"github.com/casbin/casbin/v2/model"
 	redisWatcher "github.com/nyl1001/redis-watcher/v2"
 	redis "github.com/redis/go-redis/v9"
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/sdk"
-	"github.com/tripleear/triear-go-admin-core/sdk/config"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/sdk"
+	"github.com/tripleear/triear-go-core/sdk/config"
 	"gorm.io/gorm"
 
 	gormAdapter "github.com/nyl1001/gorm-adapter/v3"

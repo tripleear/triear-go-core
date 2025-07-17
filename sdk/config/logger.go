@@ -1,6 +1,6 @@
 package config
 
-import "github.com/tripleear/triear-go-admin-core/sdk/pkg/logger"
+import "github.com/tripleear/triear-go-core/sdk/pkg/logger"
 
 type Logger struct {
 	Type       string

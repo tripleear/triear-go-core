@@ -11,7 +11,7 @@ import (
 	"context"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/tripleear/triear-go-admin-core/tools/utils"
+	"github.com/tripleear/triear-go-core/tools/utils"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

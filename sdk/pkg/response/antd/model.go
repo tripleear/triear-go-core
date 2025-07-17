@@ -3,7 +3,7 @@ package antd
 import (
 	"fmt"
 
-	resp "github.com/tripleear/triear-go-admin-core/sdk/pkg/response"
+	resp "github.com/tripleear/triear-go-core/sdk/pkg/response"
 )
 
 const (

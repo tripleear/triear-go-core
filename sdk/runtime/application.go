@@ -8,9 +8,9 @@ import (
 
 	casbin "github.com/casbin/casbin/v2"
 	cron "github.com/robfig/cron/v3"
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/storage"
-	"github.com/tripleear/triear-go-admin-core/storage/queue"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/storage"
+	"github.com/tripleear/triear-go-core/storage/queue"
 	"gorm.io/gorm"
 )
 

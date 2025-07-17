@@ -10,7 +10,7 @@ package queue
 import (
 	json "github.com/json-iterator/go"
 	"github.com/nsqio/go-nsq"
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/storage"
 )
 
 // NewNSQ nsq模式 只能监听一个channel

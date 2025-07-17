@@ -4,7 +4,7 @@ package reader
 import (
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 // Reader is an interface for merging changesets

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/utils"
 
-	loggerCore "github.com/tripleear/triear-go-admin-core/logger"
+	loggerCore "github.com/tripleear/triear-go-core/logger"
 )
 
 // Colors

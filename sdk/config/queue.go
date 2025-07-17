@@ -1,12 +1,12 @@
 package config
 
 import (
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
+	"github.com/tripleear/triear-go-core/sdk/pkg/wrapper"
 	"time"
 
 	redisqueue "github.com/nyl1001/redisqueue/v2"
-	"github.com/tripleear/triear-go-admin-core/storage"
-	"github.com/tripleear/triear-go-admin-core/storage/queue"
+	"github.com/tripleear/triear-go-core/storage"
+	"github.com/tripleear/triear-go-core/storage/queue"
 )
 
 type Queue struct {

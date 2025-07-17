@@ -13,8 +13,8 @@ import (
 	"time"
 
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/tripleear/triear-go-admin-core/server/grpc/interceptors/logging/ctxlog"
-	"github.com/tripleear/triear-go-admin-core/tools/utils"
+	"github.com/tripleear/triear-go-core/server/grpc/interceptors/logging/ctxlog"
+	"github.com/tripleear/triear-go-core/tools/utils"
 	"google.golang.org/grpc"
 )
 

@@ -4,12 +4,12 @@ import (
 	"io"
 	"os"
 
-	"github.com/tripleear/triear-go-admin-core/debug/writer"
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/plugins/logger/zap"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg"
+	"github.com/tripleear/triear-go-core/debug/writer"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/plugins/logger/zap"
+	"github.com/tripleear/triear-go-core/sdk/pkg"
 
-	log "github.com/tripleear/triear-go-admin-core/logger"
+	log "github.com/tripleear/triear-go-core/logger"
 )
 
 // SetupLogger 日志 cap 单位为kb

@@ -1,4 +1,4 @@
-module github.com/tripleear/triear-go-admin-core
+module github.com/tripleear/triear-go-core
 
 go 1.23
 

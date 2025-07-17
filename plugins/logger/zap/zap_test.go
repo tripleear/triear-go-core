@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/tripleear/triear-go-admin-core/debug/writer"
-	"github.com/tripleear/triear-go-admin-core/logger"
+	"github.com/tripleear/triear-go-core/debug/writer"
+	"github.com/tripleear/triear-go-core/logger"
 )
 
 func TestName(t *testing.T) {

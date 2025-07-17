@@ -3,7 +3,7 @@ package json
 import (
 	"encoding/json"
 
-	"github.com/tripleear/triear-go-admin-core/config/encoder"
+	"github.com/tripleear/triear-go-core/config/encoder"
 )
 
 type jsonEncoder struct{}

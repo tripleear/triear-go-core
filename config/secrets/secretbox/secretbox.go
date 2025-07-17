@@ -4,7 +4,7 @@ package secretbox
 
 import (
 	"github.com/pkg/errors"
-	"github.com/tripleear/triear-go-admin-core/config/secrets"
+	"github.com/tripleear/triear-go-core/config/secrets"
 	"golang.org/x/crypto/nacl/secretbox"
 
 	"crypto/rand"

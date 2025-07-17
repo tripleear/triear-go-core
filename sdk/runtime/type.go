@@ -7,8 +7,8 @@ import (
 
 	casbin "github.com/casbin/casbin/v2"
 	cron "github.com/robfig/cron/v3"
-	"github.com/tripleear/triear-go-admin-core/logger"
-	"github.com/tripleear/triear-go-admin-core/storage"
+	"github.com/tripleear/triear-go-core/logger"
+	"github.com/tripleear/triear-go-core/storage"
 	"gorm.io/gorm"
 )
 
@@ -39,7 +39,7 @@ type Runtime interface {
 
 	GetRouter() []Router
 
-	// SetLogger 使用go-admin定义的logger，参考来源go-micro
+	// SetLogger 使用triear-go定义的logger，参考来源go-micro
 	SetLogger(logger logger.Logger)
 	GetLogger() logger.Logger
 

@@ -3,7 +3,7 @@ package file
 import (
 	"testing"
 
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 func TestFormat(t *testing.T) {

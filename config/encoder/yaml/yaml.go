@@ -2,7 +2,7 @@ package yaml
 
 import (
 	"github.com/ghodss/yaml"
-	"github.com/tripleear/triear-go-admin-core/config/encoder"
+	"github.com/tripleear/triear-go-core/config/encoder"
 )
 
 type yamlEncoder struct{}

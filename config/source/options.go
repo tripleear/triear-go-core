@@ -3,8 +3,8 @@ package source
 import (
 	"context"
 
-	"github.com/tripleear/triear-go-admin-core/config/encoder"
-	"github.com/tripleear/triear-go-admin-core/config/encoder/json"
+	"github.com/tripleear/triear-go-core/config/encoder"
+	"github.com/tripleear/triear-go-core/config/encoder/json"
 )
 
 type Options struct {

@@ -6,7 +6,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/wrapper"
+	"github.com/tripleear/triear-go-core/sdk/pkg/wrapper"
 	"io/ioutil"
 )
 

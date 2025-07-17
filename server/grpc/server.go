@@ -16,7 +16,7 @@ import (
 
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	log "github.com/tripleear/triear-go-admin-core/logger"
+	log "github.com/tripleear/triear-go-core/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )

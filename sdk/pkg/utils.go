@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"errors"
-	"github.com/tripleear/triear-go-admin-core/sdk/pkg/consts"
+	"github.com/tripleear/triear-go-core/sdk/pkg/consts"
 	"log"
 	"runtime"
 	"strconv"
@@ -15,7 +15,7 @@ import (
 
 const (
 	TrafficKey = "X-Request-Id"
-	LoggerKey  = "_go-admin-logger-request"
+	LoggerKey  = "_triear-go-logger-request"
 )
 
 func CompareHashAndPassword(e string, p string) (bool, error) {

@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tripleear/triear-go-admin-core/config/source"
-	"github.com/tripleear/triear-go-admin-core/config/source/env"
-	"github.com/tripleear/triear-go-admin-core/config/source/file"
-	"github.com/tripleear/triear-go-admin-core/config/source/memory"
+	"github.com/tripleear/triear-go-core/config/source"
+	"github.com/tripleear/triear-go-core/config/source/env"
+	"github.com/tripleear/triear-go-core/config/source/file"
+	"github.com/tripleear/triear-go-core/config/source/memory"
 )
 
 func createFileForIssue18(t *testing.T, content string) *os.File {

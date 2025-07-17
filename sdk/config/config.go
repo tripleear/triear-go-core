@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/tripleear/triear-go-admin-core/config"
-	"github.com/tripleear/triear-go-admin-core/config/source"
+	"github.com/tripleear/triear-go-core/config"
+	"github.com/tripleear/triear-go-core/config/source"
 )
 
 var (

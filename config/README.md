@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"testing"
 	
-	"github.com/tripleear/triear-go-admin-core/config"
-	"github.com/tripleear/triear-go-admin-core/config/source/file"
+	"github.com/tripleear/triear-go-core/config"
+	"github.com/tripleear/triear-go-core/config/source/file"
 )
 
 func TestApp(t *testing.T)  {
