@@ -26,6 +26,8 @@ func init() {
 type defaultLogger struct {
 	sync.RWMutex
 	opts Options
+	// fields to always be logged
+	fields map[string]interface{}
 }
 
 // Init (opts...) should only overwrite provided options
@@ -41,10 +43,17 @@ func (l *defaultLogger) String() string {
 }
 
 func (l *defaultLogger) Fields(fields map[string]interface{}) Logger {
+	zl := &defaultLogger{
+		opts:   l.opts,
+		fields: fields,
+	}
+	return zl
+}
+
+func (l *defaultLogger) GetFields() map[string]interface{} {
 	l.Lock()
-	l.opts.Fields = copyFields(fields)
-	l.Unlock()
-	return l
+	defer l.Unlock()
+	return l.fields
 }
 
 func copyFields(src map[string]interface{}) map[string]interface{} {
@@ -95,6 +104,9 @@ func (l *defaultLogger) logf(level Level, format string, v ...interface{}) {
 
 	l.RLock()
 	fields := copyFields(l.opts.Fields)
+	for k, v := range l.fields {
+		fields[k] = v
+	}
 	l.RUnlock()
 
 	//fields["level"] = level.String()
