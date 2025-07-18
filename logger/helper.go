@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"github.com/alphadose/haxmap"
 	"os"
 )
@@ -12,21 +13,6 @@ type Helper struct {
 
 func NewHelper(log Logger) *Helper {
 	return &Helper{Logger: log}
-}
-
-// WithFunc is short for WithField
-func WithFunc(funcName string) *Helper {
-	return WithField("func", funcName)
-}
-
-// WithField add kv into log entry
-func WithField(key string, value any) *Helper {
-	r := haxmap.New[string, any]()
-	r.Set(key, value)
-	return &Helper{
-		kv:     r,
-		Logger: DefaultLogger,
-	}
 }
 
 func (h *Helper) toFieldsMap() map[string]interface{} {
@@ -47,70 +33,48 @@ func (h *Helper) copyFields() *haxmap.Map[string, any] {
 	return r
 }
 
-func (h *Helper) Info(args ...interface{}) {
-	h.Infof("%+v", args...)
+func (h *Helper) Info(ctx context.Context, args ...interface{}) {
+	h.Infof(ctx, "%+v", args...)
 }
 
-func (h *Helper) Infof(template string, args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(InfoLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Logf(InfoLevel, template, args...)
+func (h *Helper) Infof(ctx context.Context, template string, args ...interface{}) {
+	h.Logger.Native().(*defaultLogger).infof(ctx, template, h.kv, args...)
 }
 
-func (h *Helper) Trace(args ...interface{}) {
-	h.Tracef("%+v", args...)
+func (h *Helper) Trace(ctx context.Context, args ...interface{}) {
+	h.Tracef(ctx, "%+v", args...)
 }
 
-func (h *Helper) Tracef(template string, args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(TraceLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Logf(TraceLevel, template, args...)
+func (h *Helper) Tracef(ctx context.Context, template string, args ...interface{}) {
+	h.Logger.Native().(*defaultLogger).debugf(ctx, template, h.kv, args...)
 }
 
-func (h *Helper) Debug(args ...interface{}) {
-	h.Debugf("%+v", args...)
+func (h *Helper) Debug(ctx context.Context, args ...interface{}) {
+	h.Debugf(ctx, "%+v", args...)
 }
 
-func (h *Helper) Debugf(template string, args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(DebugLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Logf(DebugLevel, template, args...)
+func (h *Helper) Debugf(ctx context.Context, template string, args ...interface{}) {
+	h.Logger.Native().(*defaultLogger).debugf(ctx, template, h.kv, args...)
 }
 
-func (h *Helper) Warn(args ...interface{}) {
-	h.Warnf("%+v", args...)
+func (h *Helper) Warn(ctx context.Context, args ...interface{}) {
+	h.Warnf(ctx, "%+v", args...)
 }
 
-func (h *Helper) Warnf(template string, args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(WarnLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Logf(WarnLevel, template, args...)
+func (h *Helper) Warnf(ctx context.Context, template string, args ...interface{}) {
+	h.Logger.Native().(*defaultLogger).warnf(ctx, template, h.kv, args...)
 }
 
-func (h *Helper) Error(args ...interface{}) {
-	h.Errorf("%+v", args...)
+func (h *Helper) Error(ctx context.Context, err error, args ...interface{}) {
+	h.Errorf(ctx, err, "%+v", args...)
 }
 
-func (h *Helper) Errorf(template string, args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(ErrorLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Logf(ErrorLevel, template, args...)
+func (h *Helper) Errorf(ctx context.Context, err error, template string, args ...interface{}) {
+	h.Logger.Native().(*defaultLogger).errorf(ctx, err, template, h.kv, args...)
 }
 
-func (h *Helper) Fatal(args ...interface{}) {
-	h.Fatalf("%+v", args...)
-}
-
-func (h *Helper) Fatalf(template string, args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(FatalLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Logf(FatalLevel, template, args...)
+func (h *Helper) Fatalf(ctx context.Context, err error, template string, args ...interface{}) {
+	h.Logger.Native().(*defaultLogger).fatalf(ctx, err, template, h.kv, args...)
 	os.Exit(1)
 }
 

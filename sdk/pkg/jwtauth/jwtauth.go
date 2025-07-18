@@ -405,7 +405,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	if err != nil {
 		var validationErr *jwt.ValidationError
 		ok := errors.As(err, &validationErr)
-		logger.Errorf("middlewareImpl GetClaimsFromJWT error: %v, validationErr: %+v", err, validationErr)
+		logger.Errorf(c, err, "middlewareImpl GetClaimsFromJWT error: %v, validationErr: %+v", err, validationErr)
 		if !ok && (strings.Contains(err.Error(), "Token is expired") || (validationErr != nil && validationErr.Errors&jwt.ValidationErrorExpired == jwt.ValidationErrorExpired)) {
 			mw.unauthorized(c, 6401, mw.HTTPStatusMessageFunc(ErrExpiredToken, c))
 			return
@@ -415,7 +415,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	}
 	exp, err := claims.Exp()
 	if err != nil {
-		logger.Errorf("get jwt exp err: %v", err)
+		logger.Errorf(c, err, "get jwt exp err: %v", err)
 		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(err, c))
 		return
 	}
@@ -432,7 +432,7 @@ func (mw *GinJWTMiddleware) middlewareImpl(c *gin.Context) {
 	}
 
 	if !mw.Authorizator(identity, c) {
-		logger.Warnf("mw authorized failed, identity: %+v", identity)
+		logger.Warnf(c, "mw authorized failed, identity: %+v", identity)
 		mw.unauthorized(c, http.StatusForbidden, mw.HTTPStatusMessageFunc(ErrForbidden, c))
 		return
 	}
@@ -607,7 +607,7 @@ func (mw *GinJWTMiddleware) CheckIfTokenExpire(c *gin.Context) (jwt.MapClaims, e
 		// (see https://github.com/appleboy/gin-jwt/issues/176)
 		var validationErr *jwt.ValidationError
 		ok := errors.As(err, &validationErr)
-		logger.Errorf("CheckIfTokenExpire jwt check error: %v, validationErr: %+v", err, validationErr)
+		logger.Errorf(c, err, "CheckIfTokenExpire jwt check error: %v, validationErr: %+v", validationErr)
 		if !ok || validationErr.Errors&jwt.ValidationErrorExpired != jwt.ValidationErrorExpired {
 			return nil, err
 		}

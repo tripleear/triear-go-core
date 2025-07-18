@@ -3,6 +3,7 @@ package logrus
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -85,12 +86,16 @@ func (l *logrusLogger) Fields(fields map[string]interface{}) logger.Logger {
 	return &logrusLogger{l.Logger.WithFields(fields), l.opts}
 }
 
-func (l *logrusLogger) Log(level logger.Level, args ...interface{}) {
-	l.Logger.Log(loggerToLogrusLevel(level), args...)
+func (l *logrusLogger) Native() any {
+	return l
 }
 
-func (l *logrusLogger) Logf(level logger.Level, format string, args ...interface{}) {
-	l.Logger.Logf(loggerToLogrusLevel(level), format, args...)
+func (l *logrusLogger) Log(ctx context.Context, _ zerolog.Level, args ...interface{}) {
+	l.Logger.Log(loggerToLogrusLevel(l.opts.Level), args...)
+}
+
+func (l *logrusLogger) Logf(ctx context.Context, _ zerolog.Level, format string, args ...interface{}) {
+	l.Logger.Logf(loggerToLogrusLevel(l.opts.Level), format, args...)
 }
 
 func (l *logrusLogger) Options() logger.Options {
@@ -103,7 +108,7 @@ func NewLogger(opts ...logger.Option) logger.Logger {
 	// Default options
 	options := Options{
 		Options: logger.Options{
-			Level:   logger.InfoLevel,
+			Level:   zerolog.InfoLevel,
 			Fields:  make(map[string]interface{}),
 			Out:     os.Stderr,
 			Context: context.Background(),
@@ -118,40 +123,41 @@ func NewLogger(opts ...logger.Option) logger.Logger {
 	return l
 }
 
-func loggerToLogrusLevel(level logger.Level) logrus.Level {
-	switch level {
-	case logger.TraceLevel:
+func loggerToLogrusLevel(level zerolog.Level) logrus.Level {
+	if int(level) == -1 {
 		return logrus.TraceLevel
-	case logger.DebugLevel:
+	}
+	switch level {
+	case zerolog.DebugLevel:
 		return logrus.DebugLevel
-	case logger.InfoLevel:
+	case zerolog.InfoLevel:
 		return logrus.InfoLevel
-	case logger.WarnLevel:
+	case zerolog.WarnLevel:
 		return logrus.WarnLevel
-	case logger.ErrorLevel:
+	case zerolog.ErrorLevel:
 		return logrus.ErrorLevel
-	case logger.FatalLevel:
+	case zerolog.FatalLevel:
 		return logrus.FatalLevel
 	default:
 		return logrus.InfoLevel
 	}
 }
 
-func logrusToLoggerLevel(level logrus.Level) logger.Level {
+func logrusToLoggerLevel(level logrus.Level) zerolog.Level {
 	switch level {
 	case logrus.TraceLevel:
-		return logger.TraceLevel
+		return zerolog.DebugLevel
 	case logrus.DebugLevel:
-		return logger.DebugLevel
+		return zerolog.DebugLevel
 	case logrus.InfoLevel:
-		return logger.InfoLevel
+		return zerolog.InfoLevel
 	case logrus.WarnLevel:
-		return logger.WarnLevel
+		return zerolog.WarnLevel
 	case logrus.ErrorLevel:
-		return logger.ErrorLevel
+		return zerolog.ErrorLevel
 	case logrus.FatalLevel:
-		return logger.FatalLevel
+		return zerolog.FatalLevel
 	default:
-		return logger.InfoLevel
+		return zerolog.InfoLevel
 	}
 }

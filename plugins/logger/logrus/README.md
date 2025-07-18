@@ -6,6 +6,7 @@
 
 ```go
 import (
+    "context"
 	"os"
 	"github.com/sirupsen/logrus"
 	"github.com/tripleear/triear-go-core/logger"
@@ -19,7 +20,8 @@ func ExampleWithOutput() {
 func ExampleWithLogger() {
 	l := logrus.New() // *logrus.Logger
 	logger.DefaultLogger = NewLogger(WithLogger(l))
-	logger.Infof("testing: %s", "Infof")
+    ctx := context.Background()
+	logger.Infof(ctx, "testing: %s", "Infof")
 }
 ```
 

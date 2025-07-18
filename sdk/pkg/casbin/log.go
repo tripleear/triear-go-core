@@ -1,6 +1,8 @@
 package mycasbin
 
 import (
+	"context"
+	"github.com/rs/zerolog"
 	"log/slog"
 	"sync/atomic"
 
@@ -39,7 +41,7 @@ func (l *Logger) LogModel(model [][]string) {
 		}
 		str += "\n"
 	}
-	logger.DefaultLogger.Log(logger.InfoLevel, str)
+	logger.DefaultLogger.Log(context.Background(), zerolog.InfoLevel, str)
 }
 
 // LogEnforce log info related to enforce.
@@ -49,7 +51,7 @@ func (l *Logger) LogEnforce(matcher string, request []interface{}, result bool, 
 		"request":  request,
 		"result":   result,
 		"explains": explains,
-	}).Log(logger.InfoLevel, nil)
+	}).Log(context.Background(), zerolog.InfoLevel, nil)
 }
 
 // LogRole log info related to role.
@@ -65,7 +67,7 @@ func (l *Logger) LogPolicy(policy map[string][][]string) {
 	for k := range policy {
 		data[k] = policy[k]
 	}
-	logger.DefaultLogger.Fields(data).Log(logger.InfoLevel, nil)
+	logger.DefaultLogger.Fields(data).Log(context.Background(), zerolog.InfoLevel, nil)
 }
 
 //func (l *Logger) Print(v ...interface{}) {

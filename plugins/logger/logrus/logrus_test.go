@@ -1,7 +1,9 @@
 package logrus
 
 import (
+	"context"
 	"errors"
+	"github.com/rs/zerolog"
 	"os"
 	"testing"
 
@@ -28,15 +30,16 @@ func TestWithFields(t *testing.T) {
 
 	logger.DefaultLogger = l
 
-	logger.Log(logger.InfoLevel, "testing: Info")
-	logger.Logf(logger.InfoLevel, "testing: %s", "Infof")
+	ctx := context.Background()
+	logger.Log(ctx, zerolog.InfoLevel, "testing: Info")
+	logger.Logf(ctx, zerolog.InfoLevel, "testing: %s", "Infof")
 }
 
 func TestWithError(t *testing.T) {
 	l := NewLogger().Fields(map[string]interface{}{"error": errors.New("boom!")})
 	logger.DefaultLogger = l
-
-	logger.Log(logger.InfoLevel, "testing: error")
+	ctx := context.Background()
+	logger.Log(ctx, zerolog.ErrorLevel, "testing: error")
 }
 
 func TestWithLogger(t *testing.T) {
@@ -46,7 +49,8 @@ func TestWithLogger(t *testing.T) {
 		"k2": 123456,
 	})
 	logger.DefaultLogger = l
-	logger.Log(logger.InfoLevel, "testing: with *logrus.Logger")
+	ctx := context.Background()
+	logger.Log(ctx, zerolog.InfoLevel, "testing: with *logrus.Logger")
 
 	// with *logrus.Entry
 	el := NewLogger(WithLogger(logrus.NewEntry(logrus.StandardLogger()))).Fields(map[string]interface{}{
@@ -54,27 +58,27 @@ func TestWithLogger(t *testing.T) {
 		"k4": true,
 	})
 	logger.DefaultLogger = el
-	logger.Log(logger.InfoLevel, "testing: with *logrus.Entry")
+	logger.Log(ctx, zerolog.InfoLevel, "testing: with *logrus.Entry")
 }
 
 func TestJSON(t *testing.T) {
 	logger.DefaultLogger = NewLogger(WithJSONFormatter(&logrus.JSONFormatter{}))
-
-	logger.Logf(logger.InfoLevel, "test logf: %s", "name")
+	ctx := context.Background()
+	logger.Logf(ctx, zerolog.InfoLevel, "test logf: %s", "name")
 }
 
 func TestSetLevel(t *testing.T) {
 	logger.DefaultLogger = NewLogger()
+	ctx := context.Background()
+	logger.Init(logger.WithLevel(zerolog.DebugLevel))
+	logger.Logf(ctx, zerolog.DebugLevel, "test show debug: %s", "debug msg")
 
-	logger.Init(logger.WithLevel(logger.DebugLevel))
-	logger.Logf(logger.DebugLevel, "test show debug: %s", "debug msg")
-
-	logger.Init(logger.WithLevel(logger.InfoLevel))
-	logger.Logf(logger.DebugLevel, "test non-show debug: %s", "debug msg")
+	logger.Init(logger.WithLevel(zerolog.InfoLevel))
+	logger.Logf(ctx, zerolog.InfoLevel, "test non-show debug: %s", "debug msg")
 }
 
 func TestWithReportCaller(t *testing.T) {
 	logger.DefaultLogger = NewLogger(ReportCaller())
-
-	logger.Logf(logger.InfoLevel, "testing: %s", "WithReportCaller")
+	ctx := context.Background()
+	logger.Logf(ctx, zerolog.DebugLevel, "testing: %s", "WithReportCaller")
 }

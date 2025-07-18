@@ -98,11 +98,11 @@ func (e *Server) Start(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("gRPC Server listening on %s failed: %w", e.options.addr, err)
 	}
-	log.Infof("gRPC Server listening on %s", ts.Addr().String())
+	log.Infof(ctx, "gRPC Server listening on %s", ts.Addr().String())
 
 	go func() {
 		if err = e.srv.Serve(ts); err != nil {
-			log.Errorf("gRPC Server start error: %s", err.Error())
+			log.Errorf(ctx, err, "gRPC Server start error")
 		}
 	}()
 	e.started = true
@@ -116,7 +116,7 @@ func (e *Server) Attempt() bool {
 
 func (e *Server) Shutdown(ctx context.Context) error {
 	<-ctx.Done()
-	log.Info("gRPC Server will be shutdown gracefully")
+	log.Info(ctx, "gRPC Server will be shutdown gracefully")
 	e.srv.GracefulStop()
 	return nil
 }

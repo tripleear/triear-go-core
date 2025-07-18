@@ -3,6 +3,7 @@ package zap
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog"
 	"io"
 	"os"
 	"sync"
@@ -49,7 +50,7 @@ func (l *zaplog) Init(opts ...logger.Option) error {
 
 	// Set log Level if not default
 	zapConfig.Level = zap.NewAtomicLevel()
-	if l.opts.Level != logger.InfoLevel {
+	if l.opts.Level != zerolog.InfoLevel {
 		zapConfig.Level.SetLevel(loggerToZapLevel(l.opts.Level))
 	}
 	zapConfig.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
@@ -118,7 +119,7 @@ func (l *zaplog) Error(err error) logger.Logger {
 	return l.Fields(map[string]interface{}{"error": err})
 }
 
-func (l *zaplog) Log(level logger.Level, args ...interface{}) {
+func (l *zaplog) Log(ctx context.Context, _ zerolog.Level, args ...interface{}) {
 	l.RLock()
 	data := make([]zap.Field, 0, len(l.fields))
 	for k, v := range l.fields {
@@ -126,7 +127,7 @@ func (l *zaplog) Log(level logger.Level, args ...interface{}) {
 	}
 	l.RUnlock()
 
-	lvl := loggerToZapLevel(level)
+	lvl := loggerToZapLevel(l.opts.Level)
 	msg := fmt.Sprint(args...)
 	switch lvl {
 	case zap.DebugLevel:
@@ -142,7 +143,11 @@ func (l *zaplog) Log(level logger.Level, args ...interface{}) {
 	}
 }
 
-func (l *zaplog) Logf(level logger.Level, format string, args ...interface{}) {
+func (l *zaplog) Native() any {
+	return l
+}
+
+func (l *zaplog) Logf(ctx context.Context, _ zerolog.Level, format string, args ...interface{}) {
 	l.RLock()
 	data := make([]zap.Field, 0, len(l.fields))
 	for k, v := range l.fields {
@@ -150,7 +155,7 @@ func (l *zaplog) Logf(level logger.Level, format string, args ...interface{}) {
 	}
 	l.RUnlock()
 
-	lvl := loggerToZapLevel(level)
+	lvl := loggerToZapLevel(l.opts.Level)
 	msg := fmt.Sprintf(format, args...)
 	switch lvl {
 	case zap.DebugLevel:
@@ -178,7 +183,7 @@ func (l *zaplog) Options() logger.Options {
 func NewLogger(opts ...logger.Option) (logger.Logger, error) {
 	// Default options
 	options := logger.Options{
-		Level:   logger.InfoLevel,
+		Level:   zerolog.InfoLevel,
 		Fields:  make(map[string]interface{}),
 		Out:     os.Stderr,
 		Context: context.Background(),
@@ -192,36 +197,39 @@ func NewLogger(opts ...logger.Option) (logger.Logger, error) {
 	return l, nil
 }
 
-func loggerToZapLevel(level logger.Level) zapcore.Level {
-	switch level {
-	case logger.TraceLevel, logger.DebugLevel:
+func loggerToZapLevel(level zerolog.Level) zapcore.Level {
+	if int(level) == -1 {
 		return zap.DebugLevel
-	case logger.InfoLevel:
+	}
+	switch level {
+	case zerolog.DebugLevel:
+		return zap.DebugLevel
+	case zerolog.InfoLevel:
 		return zap.InfoLevel
-	case logger.WarnLevel:
+	case zerolog.WarnLevel:
 		return zap.WarnLevel
-	case logger.ErrorLevel:
+	case zerolog.ErrorLevel:
 		return zap.ErrorLevel
-	case logger.FatalLevel:
+	case zerolog.FatalLevel:
 		return zap.FatalLevel
 	default:
 		return zap.InfoLevel
 	}
 }
 
-func zapToLoggerLevel(level zapcore.Level) logger.Level {
+func zapToLoggerLevel(level zapcore.Level) zerolog.Level {
 	switch level {
 	case zap.DebugLevel:
-		return logger.DebugLevel
+		return zerolog.DebugLevel
 	case zap.InfoLevel:
-		return logger.InfoLevel
+		return zerolog.InfoLevel
 	case zap.WarnLevel:
-		return logger.WarnLevel
+		return zerolog.WarnLevel
 	case zap.ErrorLevel:
-		return logger.ErrorLevel
+		return zerolog.ErrorLevel
 	case zap.FatalLevel:
-		return logger.FatalLevel
+		return zerolog.FatalLevel
 	default:
-		return logger.InfoLevel
+		return zerolog.InfoLevel
 	}
 }

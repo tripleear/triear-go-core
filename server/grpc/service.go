@@ -29,10 +29,9 @@ func (e *Service) Dial(
 	endpoint string,
 	callTimeout time.Duration,
 	unary ...grpc.UnaryClientInterceptor) (err error) {
-	log.Infof("configure service with endpoint: %s", endpoint)
-
 	ctx, cancel := context.WithTimeout(context.Background(), callTimeout)
 	defer cancel()
+	log.Infof(ctx, "configure service with endpoint: %s", endpoint)
 
 	if len(unary) == 0 {
 		unary = defaultUnaryClientInterceptors()
@@ -47,7 +46,7 @@ func (e *Service) Dial(
 
 	if err != nil {
 		msg := fmt.Sprintf("connect gRPC service %s failed", endpoint)
-		log.Errorf(msg, err)
+		log.Errorf(ctx, err, msg)
 		return fmt.Errorf("%w, "+msg, err)
 	}
 	return nil

@@ -1,6 +1,7 @@
 package mycasbin
 
 import (
+	"context"
 	"regexp"
 	"strings"
 	"sync"
@@ -137,9 +138,10 @@ func Setup(db *gorm.DB, _ string) *casbin.SyncedEnforcer {
 
 func updateCallback(msg string) {
 	l := logger.NewHelper(sdk.Runtime.GetLogger())
-	l.Infof("casbin updateCallback msg: %v", msg)
+	ctx := context.Background()
+	l.Infof(ctx, "casbin updateCallback msg: %v", msg)
 	err := enforcer.LoadPolicy()
 	if err != nil {
-		l.Errorf("casbin LoadPolicy err: %v", err)
+		l.Errorf(ctx, err, "casbin LoadPolicy err: %v")
 	}
 }

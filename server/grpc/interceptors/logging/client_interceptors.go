@@ -65,7 +65,7 @@ func logFinalClientLine(o *options, l *logger.Helper, start time.Time, err error
 	if err != nil {
 
 	}
-	l.WithFields(f.Values()).Log(level, msg, err)
+	l.WithFields(f.Values()).Log(context.Background(), level, msg, err)
 }
 
 func newClientLoggerFields(

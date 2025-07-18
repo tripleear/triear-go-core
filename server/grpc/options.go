@@ -166,7 +166,7 @@ func defaultOptions() *Options {
 
 func customRecovery(id, domain string) recovery.RecoveryHandlerFunc {
 	return func(p interface{}) (err error) {
-		log.Errorf("panic triggered: %v", p)
+		log.Errorf(context.Background(), err, "panic triggered: %v", p)
 		return pbErr.New(id, domain, pbErr.InternalServerError)
 	}
 }

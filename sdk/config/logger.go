@@ -10,6 +10,7 @@ type Logger struct {
 	EnabledDB  bool
 	Cap        uint
 	DaysToKeep uint
+	SentryDSN  string
 }
 
 // Setup 设置logger
@@ -21,6 +22,7 @@ func (e Logger) Setup() {
 		logger.WithStdout(e.Stdout),
 		logger.WithCap(e.Cap),
 		logger.WithDaysToKeep(e.DaysToKeep),
+		logger.WithSentryDSN(e.SentryDSN),
 	)
 }
 

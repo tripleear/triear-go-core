@@ -1,6 +1,7 @@
 package antd_apis
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
@@ -81,6 +82,7 @@ func (e *Api) Bind(d interface{}, bindings ...binding.Binding) *Api {
 	if len(bindings) == 0 {
 		bindings = constructor.GetBindingForGin(d)
 	}
+	ctx := context.Background()
 	for i := range bindings {
 		if bindings[i] == nil {
 			err = e.Context.ShouldBindUri(d)
@@ -88,7 +90,7 @@ func (e *Api) Bind(d interface{}, bindings ...binding.Binding) *Api {
 			err = e.Context.ShouldBindWith(d, bindings[i])
 		}
 		if err != nil && err.Error() == "EOF" {
-			e.Logger.Warn("request body is not present anymore. ")
+			e.Logger.Warn(ctx, "request body is not present anymore. ")
 			err = nil
 			continue
 		}
@@ -113,7 +115,7 @@ func (e *Api) MakeOrm() *Api {
 	}
 	db, err := pkg.GetOrm(e.Context)
 	if err != nil {
-		e.Logger.Error(http.StatusInternalServerError, err, "数据库连接获取失败")
+		e.Logger.Error(e.Context, err, http.StatusInternalServerError, "数据库连接获取失败")
 		e.AddError(err)
 	}
 	e.Orm = db
@@ -130,7 +132,7 @@ func (e *Api) AddError(err error) {
 	if e.Errors == nil {
 		e.Errors = err
 	} else if err != nil {
-		e.Logger.Error(err)
+		e.Logger.Error(e.Context, err)
 		e.Errors = fmt.Errorf("%v; %w", e.Error, err)
 	}
 }

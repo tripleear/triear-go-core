@@ -2,7 +2,7 @@ package ctxlog
 
 import (
 	"context"
-
+	"github.com/rs/zerolog"
 	"github.com/tripleear/triear-go-core/logger"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -65,23 +65,23 @@ func ToContext(ctx context.Context, logger *logger.Helper) context.Context {
 // Debug is equivalent to calling Debug on the logger.Logger in the context.
 // It is a no-op if the context does not contain a logger.Logger.
 func Debug(ctx context.Context, msg string, fields map[string]interface{}) {
-	Extract(ctx).Fields(fields).Log(logger.DebugLevel, msg)
+	Extract(ctx).Fields(fields).Log(ctx, zerolog.DebugLevel, msg)
 }
 
 // Info is equivalent to calling Info on the logger.Logger in the context.
 // It is a no-op if the context does not contain a logger.Logger.
 func Info(ctx context.Context, msg string, fields map[string]interface{}) {
-	Extract(ctx).Fields(fields).Log(logger.InfoLevel, msg)
+	Extract(ctx).Fields(fields).Log(ctx, zerolog.InfoLevel, msg)
 }
 
 // Warn is equivalent to calling Warn on the logger.Logger in the context.
 // It is a no-op if the context does not contain a logger.Logger.
 func Warn(ctx context.Context, msg string, fields map[string]interface{}) {
-	Extract(ctx).Fields(fields).Log(logger.WarnLevel, msg)
+	Extract(ctx).Fields(fields).Log(ctx, zerolog.WarnLevel, msg)
 }
 
 // Error is equivalent to calling Error on the logger.Logger in the context.
 // It is a no-op if the context does not contain a logger.Logger.
 func Error(ctx context.Context, msg string, fields map[string]interface{}) {
-	Extract(ctx).Fields(fields).Log(logger.ErrorLevel, msg)
+	Extract(ctx).Fields(fields).Log(ctx, zerolog.ErrorLevel, msg)
 }

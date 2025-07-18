@@ -1,7 +1,9 @@
 package zap
 
 import (
+	"context"
 	"fmt"
+	"github.com/rs/zerolog"
 	"testing"
 
 	"github.com/tripleear/triear-go-core/debug/writer"
@@ -28,7 +30,8 @@ func TestLogf(t *testing.T) {
 	}
 
 	logger.DefaultLogger = l
-	logger.Logf(logger.InfoLevel, "test logf: %s", "name")
+	ctx := context.Background()
+	logger.Logf(ctx, zerolog.InfoLevel, "test logf: %s", "name")
 }
 
 func TestSetLevel(t *testing.T) {
@@ -38,11 +41,12 @@ func TestSetLevel(t *testing.T) {
 	}
 	logger.DefaultLogger = l
 
-	logger.Init(logger.WithLevel(logger.DebugLevel))
-	l.Logf(logger.DebugLevel, "test show debug: %s", "debug msg")
+	ctx := context.Background()
+	logger.Init(logger.WithLevel(zerolog.DebugLevel))
+	l.Logf(ctx, zerolog.DebugLevel, "test show debug: %s", "debug msg")
 
-	logger.Init(logger.WithLevel(logger.InfoLevel))
-	l.Logf(logger.DebugLevel, "test non-show debug: %s", "debug msg")
+	logger.Init(logger.WithLevel(zerolog.InfoLevel))
+	l.Logf(ctx, zerolog.InfoLevel, "test non-show debug: %s", "debug msg")
 }
 
 func TestWithReportCaller(t *testing.T) {
@@ -51,8 +55,8 @@ func TestWithReportCaller(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	logger.Logf(logger.InfoLevel, "testing: %s", "WithReportCaller")
+	ctx := context.Background()
+	logger.Logf(ctx, zerolog.InfoLevel, "testing: %s", "WithReportCaller")
 }
 
 func TestFields(t *testing.T) {
@@ -63,7 +67,8 @@ func TestFields(t *testing.T) {
 	logger.DefaultLogger = l.Fields(map[string]interface{}{
 		"x-request-id": "123456abc",
 	})
-	logger.DefaultLogger.Log(logger.InfoLevel, "hello")
+	ctx := context.Background()
+	logger.DefaultLogger.Log(ctx, zerolog.InfoLevel, "hello")
 }
 
 func TestFile(t *testing.T) {
@@ -72,7 +77,8 @@ func TestFile(t *testing.T) {
 		t.Errorf("logger setup error: %s", err.Error())
 	}
 	//var err error
-	logger.DefaultLogger, err = NewLogger(logger.WithLevel(logger.TraceLevel), WithOutput(output))
+	ctx := context.Background()
+	logger.DefaultLogger, err = NewLogger(logger.WithLevel(zerolog.DebugLevel), WithOutput(output))
 	if err != nil {
 		t.Errorf("logger setup error: %s", err.Error())
 	}
@@ -80,7 +86,7 @@ func TestFile(t *testing.T) {
 		"x-request-id": "123456abc",
 	})
 	fmt.Println(logger.DefaultLogger)
-	logger.DefaultLogger.Log(logger.InfoLevel, "hello")
+	logger.DefaultLogger.Log(ctx, zerolog.DebugLevel, "hello")
 }
 
 //func TestFileKeep(t *testing.T) {

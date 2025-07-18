@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"context"
+	"github.com/rs/zerolog"
 	"io"
 	"os"
 
@@ -18,10 +20,11 @@ func SetupLogger(opts ...Option) logger.Logger {
 	for _, o := range opts {
 		o(&op)
 	}
+	ctx := context.Background()
 	if !pkg.PathExist(op.path) {
 		err := pkg.PathCreate(op.path)
 		if err != nil {
-			log.Fatalf("create dir error: %s", err.Error())
+			log.Fatalf(ctx, err, "create dir error: %s", err.Error())
 		}
 	}
 	var err error
@@ -33,22 +36,21 @@ func SetupLogger(opts ...Option) logger.Logger {
 			writer.WithCap(op.cap<<10),
 		)
 		if err != nil {
-			log.Fatal("logger setup error: %s", err.Error())
+			log.Fatal(ctx, err, "logger setup error: %s", err.Error())
 		}
 	default:
 		output = os.Stdout
 	}
-	var level logger.Level
-	level, err = logger.GetLevel(op.level)
+	level, err := zerolog.ParseLevel(op.level)
 	if err != nil {
-		log.Fatalf("get logger level error, %s", err.Error())
+		log.Fatalf(ctx, err, "get logger level error, %s", err.Error())
 	}
 
 	switch op.driver {
 	case "zap":
 		log.DefaultLogger, err = zap.NewLogger(logger.WithLevel(level), zap.WithOutput(output), zap.WithCallerSkip(2))
 		if err != nil {
-			log.Fatalf("new zap logger error, %s", err.Error())
+			log.Fatalf(ctx, err, "new zap logger error, %s", err.Error())
 		}
 	//case "logrus":
 	//	setLogger = logrus.NewLogger(logger.WithLevel(level), logger.WithOutput(output), logrus.ReportCaller())

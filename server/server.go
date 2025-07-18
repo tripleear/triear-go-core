@@ -119,7 +119,7 @@ func (e *Server) engageStopProcedure(stopComplete <-chan struct{}) error {
 			select {
 			case err, ok := <-e.errChan:
 				if ok {
-					e.logger.Error(err, "error received after stop sequence was engaged")
+					e.logger.Error(e.internalCtx, err, "error received after stop sequence was engaged")
 				}
 			case <-stopComplete:
 				return

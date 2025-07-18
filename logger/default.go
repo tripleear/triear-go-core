@@ -3,21 +3,19 @@ package logger
 import (
 	"context"
 	"fmt"
-	"log"
+	"github.com/alphadose/haxmap"
+	"github.com/cockroachdb/errors"
+	"github.com/getsentry/sentry-go"
+	"github.com/rs/zerolog"
 	"os"
-	"runtime"
-	"sort"
-	"strings"
 	"sync"
 	"time"
-
-	dlog "github.com/tripleear/triear-go-core/debug/log"
 )
 
 func init() {
-	lvl, err := GetLevel(os.Getenv("GO_ADMIN_LOG_LEVEL"))
+	lvl, err := zerolog.ParseLevel(os.Getenv("GO_ADMIN_LOG_LEVEL"))
 	if err != nil {
-		lvl = InfoLevel
+		lvl = zerolog.InfoLevel
 	}
 
 	DefaultLogger = NewHelper(NewLogger(WithLevel(lvl)))
@@ -28,6 +26,11 @@ type defaultLogger struct {
 	opts Options
 	// fields to always be logged
 	fields map[string]interface{}
+	logger *zerolog.Logger
+}
+
+func (l *defaultLogger) Native() any {
+	return l
 }
 
 // Init (opts...) should only overwrite provided options
@@ -43,6 +46,8 @@ func (l *defaultLogger) String() string {
 }
 
 func (l *defaultLogger) Fields(fields map[string]interface{}) Logger {
+	l.Lock()
+	defer l.Unlock()
 	l.fields = fields
 	return l
 }
@@ -53,6 +58,62 @@ func (l *defaultLogger) GetFields() map[string]interface{} {
 	return l.fields
 }
 
+func (l *defaultLogger) addDefaultFields(fields *haxmap.Map[string, any]) {
+	if fields == nil {
+		fields = haxmap.New[string, any]()
+	}
+	for k, v := range l.fields {
+		fields.Set(k, v)
+	}
+}
+
+func (l *defaultLogger) fatalf(ctx context.Context, err error, format string, fields *haxmap.Map[string, any], args ...any) {
+	args = argsValidate(args)
+	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelFatal, err, format, args...)
+	f := l.logger.Fatal()
+	l.addDefaultFields(fields)
+	wrap(f, fields).Err(err).Msgf(format, args...)
+}
+
+func (l *defaultLogger) warnf(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
+	args = argsValidate(args)
+	f := l.logger.Warn()
+	l.addDefaultFields(fields)
+	wrap(f, fields).Msgf(format, args...)
+}
+
+func (l *defaultLogger) infof(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
+	args = argsValidate(args)
+	f := l.logger.Info()
+	l.addDefaultFields(fields)
+	wrap(f, fields).Msgf(format, args...)
+}
+
+func (l *defaultLogger) debugf(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
+	args = argsValidate(args)
+	f := l.logger.Debug()
+	l.addDefaultFields(fields)
+	wrap(f, fields).Msgf(format, args...)
+}
+
+func (l *defaultLogger) tracef(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
+	args = argsValidate(args)
+	f := l.logger.Debug()
+	l.addDefaultFields(fields)
+	wrap(f, fields).Msgf(format, args...)
+}
+
+func (l *defaultLogger) errorf(ctx context.Context, err error, format string, fields *haxmap.Map[string, any], args ...any) {
+	if err == nil {
+		return
+	}
+	args = argsValidate(args)
+	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelError, err, format, args...)
+	f := l.logger.Error()
+	l.addDefaultFields(fields)
+	wrap(f, fields).Stack().Err(err).Msgf(format, args...)
+}
+
 func copyFields(src map[string]interface{}) map[string]interface{} {
 	dst := make(map[string]interface{}, len(src))
 	for k, v := range src {
@@ -61,104 +122,38 @@ func copyFields(src map[string]interface{}) map[string]interface{} {
 	return dst
 }
 
-// logCallerfilePath returns a package/file:line description of the caller,
-// preserving only the leaf directory name and file name.
-func logCallerfilePath(loggingFilePath string) string {
-	// To make sure we trim the path correctly on Windows too, we
-	// counter-intuitively need to use '/' and *not* os.PathSeparator here,
-	// because the path given originates from Go stdlib, specifically
-	// runtime.Caller() which (as of Mar/17) returns forward slashes even on
-	// Windows.
-	//
-	// See https://github.com/golang/go/issues/3335
-	// and https://github.com/golang/go/issues/18151
-	//
-	// for discussion on the issue on Go side.
-	idx := strings.LastIndexByte(loggingFilePath, '/')
-	if idx == -1 {
-		return loggingFilePath
-	}
-	idx = strings.LastIndexByte(loggingFilePath[:idx], '/')
-	if idx == -1 {
-		return loggingFilePath
-	}
-	return loggingFilePath[idx+1:]
+func (l *defaultLogger) Log(ctx context.Context, level zerolog.Level, v ...interface{}) {
+	l.logf(ctx, level, "%+v", v...)
 }
 
-func (l *defaultLogger) Log(level Level, v ...interface{}) {
-	l.logf(level, "%+v", v...)
+func (l *defaultLogger) Logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
+	l.logf(ctx, level, format, v...)
 }
 
-func (l *defaultLogger) Logf(level Level, format string, v ...interface{}) {
-	l.logf(level, format, v...)
-}
-
-func (l *defaultLogger) logf(level Level, format string, v ...interface{}) {
-	// TODO decide does we need to write message if log level not used?
-	if !l.opts.Level.Enabled(level) {
+func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
+	if int(level) == -1 {
+		l.debugf(ctx, format, nil, v...)
 		return
 	}
+	switch level {
+	case zerolog.DebugLevel:
+		l.debugf(ctx, format, nil, v...)
+	case zerolog.InfoLevel:
+		l.infof(ctx, format, nil, v...)
+	case zerolog.WarnLevel:
+		l.warnf(ctx, format, nil, v...)
+	case zerolog.ErrorLevel:
+		l.errorf(ctx, nil, format, nil, v...)
+	case zerolog.FatalLevel:
+		l.errorf(ctx, nil, format, nil, v...)
+	case zerolog.PanicLevel:
 
-	l.RLock()
-	fields := copyFields(l.opts.Fields)
-	for k, v := range l.fields {
-		fields[k] = v
+		l.fatalf(ctx, nil, format, nil, v...)
+	case zerolog.NoLevel:
+		l.errorf(ctx, fmt.Errorf("no log level in coere"), format, nil, v...)
+	default:
+		l.errorf(ctx, fmt.Errorf("nuknown log level in coere"), format, nil, v...)
 	}
-	l.RUnlock()
-
-	//fields["level"] = level.String()
-
-	if _, file, line, ok := runtime.Caller(l.opts.CallerSkipCount); ok && level.String() == "error" {
-		fields["file"] = fmt.Sprintf("%s:%d", logCallerfilePath(file), line)
-	}
-
-	rec := dlog.Record{
-		Timestamp: time.Now(),
-		Metadata:  make(map[string]string, len(fields)),
-	}
-	if format == "" {
-		rec.Message = fmt.Sprint(v...)
-	} else {
-		rec.Message = fmt.Sprintf(format, v...)
-	}
-
-	keys := make([]string, 0, len(fields))
-	for k, v := range fields {
-		keys = append(keys, k)
-		rec.Metadata[k] = fmt.Sprintf("%v", v)
-	}
-
-	sort.Strings(keys)
-	metadata := ""
-
-	for i, k := range keys {
-		if i == 0 {
-			metadata += fmt.Sprintf("%v", fields[k])
-		} else {
-			metadata += fmt.Sprintf(" %v", fields[k])
-		}
-	}
-
-	var name string
-	if l.opts.Name != "" {
-		name = "[" + l.opts.Name + "]"
-	}
-	timeFormat := "2006-01-02 15:04:05"
-	if l.opts.TimeFormat != "" {
-		timeFormat = l.opts.TimeFormat
-	}
-	t := rec.Timestamp.Format(timeFormat)
-	logStr := ""
-	if name == "" {
-		logStr = fmt.Sprintf("%s %s %s %v\n", t, level.String(), metadata, rec.Message)
-	} else {
-		logStr = fmt.Sprintf("%s %s %s %s %v\n", name, t, level.String(), metadata, rec.Message)
-	}
-	_, err := l.opts.Out.Write([]byte(logStr))
-	if err != nil {
-		log.Printf("log [Logf] write error: %s \n", err.Error())
-	}
-
 }
 
 func (l *defaultLogger) Options() Options {
@@ -174,7 +169,7 @@ func (l *defaultLogger) Options() Options {
 func NewLogger(opts ...Option) Logger {
 	// Default options
 	options := Options{
-		Level:           InfoLevel,
+		Level:           zerolog.InfoLevel,
 		Fields:          make(map[string]interface{}),
 		Out:             os.Stderr,
 		CallerSkipCount: 3,
@@ -184,8 +179,73 @@ func NewLogger(opts ...Option) Logger {
 
 	l := &defaultLogger{opts: options}
 	if err := l.Init(opts...); err != nil {
-		l.Log(FatalLevel, err)
+		l.Log(context.Background(), zerolog.ErrorLevel, err)
+	}
+
+	rslog := zerolog.New(
+		zerolog.ConsoleWriter{
+			Out:        os.Stdout,
+			TimeFormat: time.RFC822,
+		}).With().Timestamp().Logger()
+	rslog.Level(l.opts.Level)
+	zerolog.ErrorStackMarshaler = func(err error) any {
+		return errors.GetSafeDetails(err).SafeDetails
+	}
+	l.logger = &rslog
+	// Sentry
+	if l.opts.SentryDSN != "" {
+		sentryDSN := l.opts.SentryDSN
+		WithFunc("log.SetupLog").Infof(context.Background(), "sentry %v", sentryDSN)
+		_ = sentry.Init(sentry.ClientOptions{Dsn: sentryDSN})
 	}
 
 	return l
+}
+
+func Info(ctx context.Context, args ...interface{}) {
+	Infof(ctx, "%+v", args...)
+}
+
+func Infof(ctx context.Context, template string, args ...interface{}) {
+	DefaultLogger.Native().(*defaultLogger).infof(ctx, template, nil, args...)
+}
+
+func Trace(ctx context.Context, args ...interface{}) {
+	Tracef(ctx, "%+v", args...)
+}
+
+func Tracef(ctx context.Context, template string, args ...interface{}) {
+	DefaultLogger.Native().(*defaultLogger).debugf(ctx, template, nil, args...)
+}
+
+func Debug(ctx context.Context, args ...interface{}) {
+	Debugf(ctx, "%+v", args...)
+}
+
+func Debugf(ctx context.Context, template string, args ...interface{}) {
+	DefaultLogger.Native().(*defaultLogger).debugf(ctx, template, nil, args...)
+}
+
+func Warn(ctx context.Context, args ...interface{}) {
+	Warnf(ctx, "%+v", args...)
+}
+
+func Warnf(ctx context.Context, template string, args ...interface{}) {
+	DefaultLogger.Native().(*defaultLogger).warnf(ctx, template, nil, args...)
+}
+
+func Error(ctx context.Context, err error, args ...interface{}) {
+	Errorf(ctx, err, "%+v", args...)
+}
+
+func Errorf(ctx context.Context, err error, template string, args ...interface{}) {
+	DefaultLogger.Native().(*defaultLogger).errorf(ctx, nil, template, nil, args...)
+}
+
+func Fatal(ctx context.Context, err error, args ...interface{}) {
+	Fatalf(ctx, err, "%+v", args...)
+}
+
+func Fatalf(ctx context.Context, err error, template string, args ...interface{}) {
+	DefaultLogger.Native().(*defaultLogger).fatalf(ctx, nil, template, nil, args...)
 }

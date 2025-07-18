@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -9,7 +10,7 @@ type Option func(*Options)
 
 type Options struct {
 	// The logging level the logger should log at. default is `InfoLevel`
-	Level Level
+	Level zerolog.Level
 	// fields to always be logged
 	Fields map[string]interface{}
 	// It's common to set this to a file, or leave it default which is `os.Stderr`
@@ -22,6 +23,7 @@ type Options struct {
 	Name string
 	// Timestamp.Format
 	TimeFormat string
+	SentryDSN  string
 }
 
 // WithFields set default fields for the logger
@@ -38,7 +40,7 @@ func RemoveFieldByKey(key string) Option {
 }
 
 // WithLevel set default level for the logger
-func WithLevel(level Level) Option {
+func WithLevel(level zerolog.Level) Option {
 	return func(args *Options) {
 		args.Level = level
 	}
@@ -78,5 +80,12 @@ func SetOption(k, v interface{}) Option {
 			o.Context = context.Background()
 		}
 		o.Context = context.WithValue(o.Context, k, v)
+	}
+}
+
+// WithWithSentryDSN set sentryDSN for logger
+func WithSentryDSN(sentryDSN string) Option {
+	return func(args *Options) {
+		args.SentryDSN = sentryDSN
 	}
 }

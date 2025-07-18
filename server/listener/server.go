@@ -106,21 +106,21 @@ func (e *Server) Start(ctx context.Context) error {
 	e.srv.BaseContext = func(_ net.Listener) context.Context {
 		return ctx
 	}
-	log.Infof("%s Server listening on %s", e.name, l.Addr().String())
+	log.Infof(ctx, "%s Server listening on %s", e.name, l.Addr().String())
 	go func() {
 		if e.opts.keyFile == "" || e.opts.certFile == "" {
 			if err = e.srv.Serve(l); err != nil {
-				log.Errorf("%s Server start error: %s", e.name, err.Error())
+				log.Errorf(ctx, err, "%s Server start error: %s", e.name, err.Error())
 			}
 		} else {
 			if err = e.srv.ServeTLS(l, e.opts.certFile, e.opts.keyFile); err != nil {
-				log.Errorf("%s Server start error: %s", e.name, err.Error())
+				log.Errorf(ctx, err, "%s Server start error: %s", e.name, err.Error())
 			}
 		}
 		<-ctx.Done()
 		err = e.Shutdown(ctx)
 		if err != nil {
-			log.Errorf("%S Server shutdown error: %s", e.name, err.Error())
+			log.Errorf(ctx, err, "%S Server shutdown error: %s", e.name, err.Error())
 		}
 	}()
 	if e.opts.startedHook != nil {

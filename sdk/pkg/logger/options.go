@@ -10,11 +10,12 @@ package logger
 type Option func(*options)
 
 type options struct {
-	driver string
-	path   string
-	level  string
-	stdout string
-	cap    uint
+	driver    string
+	path      string
+	level     string
+	stdout    string
+	sentryDSN string
+	cap       uint
 }
 
 func setDefault() options {
@@ -59,5 +60,11 @@ func WithCap(n uint) Option {
 func WithDaysToKeep(n uint) Option {
 	return func(o *options) {
 		o.cap = n
+	}
+}
+
+func WithSentryDSN(sentryDSN string) Option {
+	return func(o *options) {
+		o.sentryDSN = sentryDSN
 	}
 }

@@ -32,7 +32,7 @@ func (e *Api) AddError(err error) {
 	if e.Errors == nil {
 		e.Errors = err
 	} else if err != nil {
-		e.Logger.Error(err)
+		e.Logger.Error(e.Context, err)
 		e.Errors = fmt.Errorf("%v; %w", e.Errors, err)
 	}
 }
@@ -62,7 +62,7 @@ func (e *Api) Bind(d interface{}, bindings ...binding.Binding) *Api {
 			err = e.Context.ShouldBindWith(d, bindings[i])
 		}
 		if err != nil && err.Error() == "EOF" {
-			e.Logger.Warn("request body is not present anymore. ")
+			e.Logger.Warn(e.Context, "request body is not present anymore. ")
 			err = nil
 			continue
 		}
@@ -84,7 +84,7 @@ func (e *Api) Bind(d interface{}, bindings ...binding.Binding) *Api {
 func (e *Api) GetOrm() (*gorm.DB, error) {
 	db, err := pkg.GetOrm(e.Context)
 	if err != nil {
-		e.Logger.Error(http.StatusInternalServerError, err, "数据库连接获取失败")
+		e.Logger.Error(e.Context, err, http.StatusInternalServerError, err, "数据库连接获取失败")
 		return nil, err
 	}
 	return db, nil
@@ -100,7 +100,7 @@ func (e *Api) MakeOrm() *Api {
 	}
 	db, err := pkg.GetOrm(e.Context)
 	if err != nil {
-		e.Logger.Error(http.StatusInternalServerError, err, "数据库连接获取失败")
+		e.Logger.Error(e.Context, err, http.StatusInternalServerError, "数据库连接获取失败")
 		e.AddError(err)
 	}
 	e.Orm = db
