@@ -81,7 +81,7 @@ func GetLevel(levelStr string) (Level, error) {
 }
 
 func Info(args ...interface{}) {
-	DefaultLogger.Log(InfoLevel, args...)
+	Infof("%+v", args...)
 }
 
 func Infof(template string, args ...interface{}) {
@@ -89,7 +89,7 @@ func Infof(template string, args ...interface{}) {
 }
 
 func Trace(args ...interface{}) {
-	DefaultLogger.Log(TraceLevel, args...)
+	Tracef("%+v", args...)
 }
 
 func Tracef(template string, args ...interface{}) {
@@ -97,7 +97,7 @@ func Tracef(template string, args ...interface{}) {
 }
 
 func Debug(args ...interface{}) {
-	DefaultLogger.Log(DebugLevel, args...)
+	Debugf("%+v", args...)
 }
 
 func Debugf(template string, args ...interface{}) {
@@ -105,7 +105,7 @@ func Debugf(template string, args ...interface{}) {
 }
 
 func Warn(args ...interface{}) {
-	DefaultLogger.Log(WarnLevel, args...)
+	Warnf("%+v", args...)
 }
 
 func Warnf(template string, args ...interface{}) {
@@ -113,7 +113,7 @@ func Warnf(template string, args ...interface{}) {
 }
 
 func Error(args ...interface{}) {
-	DefaultLogger.Log(ErrorLevel, args...)
+	Errorf("%+v", args...)
 }
 
 func Errorf(template string, args ...interface{}) {
@@ -121,8 +121,7 @@ func Errorf(template string, args ...interface{}) {
 }
 
 func Fatal(args ...interface{}) {
-	DefaultLogger.Log(FatalLevel, args...)
-	os.Exit(1)
+	Fatalf("%+v", args...)
 }
 
 func Fatalf(template string, args ...interface{}) {
