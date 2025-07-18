@@ -25,7 +25,7 @@ type defaultLogger struct {
 	sync.RWMutex
 	opts Options
 	// fields to always be logged
-	fields map[string]interface{}
+	fields map[string]any
 	logger *zerolog.Logger
 }
 
@@ -45,14 +45,14 @@ func (l *defaultLogger) String() string {
 	return "default"
 }
 
-func (l *defaultLogger) Fields(fields map[string]interface{}) Logger {
+func (l *defaultLogger) Fields(fields map[string]any) Logger {
 	l.Lock()
 	defer l.Unlock()
 	l.fields = fields
 	return l
 }
 
-func (l *defaultLogger) GetFields() map[string]interface{} {
+func (l *defaultLogger) GetFields() map[string]any {
 	l.Lock()
 	defer l.Unlock()
 	return l.fields
@@ -114,23 +114,23 @@ func (l *defaultLogger) errorf(ctx context.Context, err error, format string, fi
 	wrap(f, fields).Stack().Err(err).Msgf(format, args...)
 }
 
-func copyFields(src map[string]interface{}) map[string]interface{} {
-	dst := make(map[string]interface{}, len(src))
+func copyFields(src map[string]any) map[string]any {
+	dst := make(map[string]any, len(src))
 	for k, v := range src {
 		dst[k] = v
 	}
 	return dst
 }
 
-func (l *defaultLogger) Log(ctx context.Context, level zerolog.Level, v ...interface{}) {
+func (l *defaultLogger) Log(ctx context.Context, level zerolog.Level, v ...any) {
 	l.logf(ctx, level, "%+v", v...)
 }
 
-func (l *defaultLogger) Logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
+func (l *defaultLogger) Logf(ctx context.Context, level zerolog.Level, format string, v ...any) {
 	l.logf(ctx, level, format, v...)
 }
 
-func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
+func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format string, v ...any) {
 	if int(level) == -1 {
 		l.debugf(ctx, format, nil, v...)
 		return
@@ -170,7 +170,7 @@ func NewLogger(opts ...Option) Logger {
 	// Default options
 	options := Options{
 		Level:           zerolog.InfoLevel,
-		Fields:          make(map[string]interface{}),
+		Fields:          make(map[string]any),
 		Out:             os.Stderr,
 		CallerSkipCount: 3,
 		Context:         context.Background(),
@@ -202,50 +202,50 @@ func NewLogger(opts ...Option) Logger {
 	return l
 }
 
-func Info(ctx context.Context, args ...interface{}) {
+func Info(ctx context.Context, args ...any) {
 	Infof(ctx, "%+v", args...)
 }
 
-func Infof(ctx context.Context, template string, args ...interface{}) {
-	DefaultLogger.Native().(*defaultLogger).infof(ctx, template, nil, args...)
+func Infof(ctx context.Context, format string, args ...any) {
+	DefaultLogger.Native().(*defaultLogger).infof(ctx, format, nil, args...)
 }
 
-func Trace(ctx context.Context, args ...interface{}) {
+func Trace(ctx context.Context, args ...any) {
 	Tracef(ctx, "%+v", args...)
 }
 
-func Tracef(ctx context.Context, template string, args ...interface{}) {
-	DefaultLogger.Native().(*defaultLogger).debugf(ctx, template, nil, args...)
+func Tracef(ctx context.Context, format string, args ...any) {
+	DefaultLogger.Native().(*defaultLogger).debugf(ctx, format, nil, args...)
 }
 
-func Debug(ctx context.Context, args ...interface{}) {
+func Debug(ctx context.Context, args ...any) {
 	Debugf(ctx, "%+v", args...)
 }
 
-func Debugf(ctx context.Context, template string, args ...interface{}) {
-	DefaultLogger.Native().(*defaultLogger).debugf(ctx, template, nil, args...)
+func Debugf(ctx context.Context, format string, args ...any) {
+	DefaultLogger.Native().(*defaultLogger).debugf(ctx, format, nil, args...)
 }
 
-func Warn(ctx context.Context, args ...interface{}) {
+func Warn(ctx context.Context, args ...any) {
 	Warnf(ctx, "%+v", args...)
 }
 
-func Warnf(ctx context.Context, template string, args ...interface{}) {
-	DefaultLogger.Native().(*defaultLogger).warnf(ctx, template, nil, args...)
+func Warnf(ctx context.Context, format string, args ...any) {
+	DefaultLogger.Native().(*defaultLogger).warnf(ctx, format, nil, args...)
 }
 
-func Error(ctx context.Context, err error, args ...interface{}) {
+func Error(ctx context.Context, err error, args ...any) {
 	Errorf(ctx, err, "%+v", args...)
 }
 
-func Errorf(ctx context.Context, err error, template string, args ...interface{}) {
-	DefaultLogger.Native().(*defaultLogger).errorf(ctx, nil, template, nil, args...)
+func Errorf(ctx context.Context, err error, format string, args ...any) {
+	DefaultLogger.Native().(*defaultLogger).errorf(ctx, nil, format, nil, args...)
 }
 
-func Fatal(ctx context.Context, err error, args ...interface{}) {
+func Fatal(ctx context.Context, err error, args ...any) {
 	Fatalf(ctx, err, "%+v", args...)
 }
 
-func Fatalf(ctx context.Context, err error, template string, args ...interface{}) {
-	DefaultLogger.Native().(*defaultLogger).fatalf(ctx, nil, template, nil, args...)
+func Fatalf(ctx context.Context, err error, format string, args ...any) {
+	DefaultLogger.Native().(*defaultLogger).fatalf(ctx, nil, format, nil, args...)
 }

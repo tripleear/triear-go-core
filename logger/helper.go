@@ -15,8 +15,8 @@ func NewHelper(log Logger) *Helper {
 	return &Helper{Logger: log}
 }
 
-func (h *Helper) toFieldsMap() map[string]interface{} {
-	result := make(map[string]interface{})
+func (h *Helper) toFieldsMap() map[string]any {
+	result := make(map[string]any)
 	h.kv.ForEach(func(key string, value any) bool {
 		result[key] = value
 		return true // 继续迭代
@@ -33,48 +33,48 @@ func (h *Helper) copyFields() *haxmap.Map[string, any] {
 	return r
 }
 
-func (h *Helper) Info(ctx context.Context, args ...interface{}) {
+func (h *Helper) Info(ctx context.Context, args ...any) {
 	h.Infof(ctx, "%+v", args...)
 }
 
-func (h *Helper) Infof(ctx context.Context, template string, args ...interface{}) {
-	h.Logger.Native().(*defaultLogger).infof(ctx, template, h.kv, args...)
+func (h *Helper) Infof(ctx context.Context, format string, args ...any) {
+	h.Logger.Native().(*defaultLogger).infof(ctx, format, h.kv, args...)
 }
 
-func (h *Helper) Trace(ctx context.Context, args ...interface{}) {
+func (h *Helper) Trace(ctx context.Context, args ...any) {
 	h.Tracef(ctx, "%+v", args...)
 }
 
-func (h *Helper) Tracef(ctx context.Context, template string, args ...interface{}) {
-	h.Logger.Native().(*defaultLogger).debugf(ctx, template, h.kv, args...)
+func (h *Helper) Tracef(ctx context.Context, format string, args ...any) {
+	h.Logger.Native().(*defaultLogger).debugf(ctx, format, h.kv, args...)
 }
 
-func (h *Helper) Debug(ctx context.Context, args ...interface{}) {
+func (h *Helper) Debug(ctx context.Context, args ...any) {
 	h.Debugf(ctx, "%+v", args...)
 }
 
-func (h *Helper) Debugf(ctx context.Context, template string, args ...interface{}) {
-	h.Logger.Native().(*defaultLogger).debugf(ctx, template, h.kv, args...)
+func (h *Helper) Debugf(ctx context.Context, format string, args ...any) {
+	h.Logger.Native().(*defaultLogger).debugf(ctx, format, h.kv, args...)
 }
 
-func (h *Helper) Warn(ctx context.Context, args ...interface{}) {
+func (h *Helper) Warn(ctx context.Context, args ...any) {
 	h.Warnf(ctx, "%+v", args...)
 }
 
-func (h *Helper) Warnf(ctx context.Context, template string, args ...interface{}) {
-	h.Logger.Native().(*defaultLogger).warnf(ctx, template, h.kv, args...)
+func (h *Helper) Warnf(ctx context.Context, format string, args ...any) {
+	h.Logger.Native().(*defaultLogger).warnf(ctx, format, h.kv, args...)
 }
 
-func (h *Helper) Error(ctx context.Context, err error, args ...interface{}) {
+func (h *Helper) Error(ctx context.Context, err error, args ...any) {
 	h.Errorf(ctx, err, "%+v", args...)
 }
 
-func (h *Helper) Errorf(ctx context.Context, err error, template string, args ...interface{}) {
-	h.Logger.Native().(*defaultLogger).errorf(ctx, err, template, h.kv, args...)
+func (h *Helper) Errorf(ctx context.Context, err error, format string, args ...any) {
+	h.Logger.Native().(*defaultLogger).errorf(ctx, err, format, h.kv, args...)
 }
 
-func (h *Helper) Fatalf(ctx context.Context, err error, template string, args ...interface{}) {
-	h.Logger.Native().(*defaultLogger).fatalf(ctx, err, template, h.kv, args...)
+func (h *Helper) Fatalf(ctx context.Context, err error, format string, args ...any) {
+	h.Logger.Native().(*defaultLogger).fatalf(ctx, err, format, h.kv, args...)
 	os.Exit(1)
 }
 
@@ -84,7 +84,7 @@ func (h *Helper) WithError(err error) *Helper {
 	return &Helper{Logger: h.Logger, kv: fields}
 }
 
-func (h *Helper) WithFields(fields map[string]interface{}) *Helper {
+func (h *Helper) WithFields(fields map[string]any) *Helper {
 	newFields := haxmap.New[string, any]()
 	for k, v := range fields {
 		newFields.Set(k, v)
@@ -99,7 +99,7 @@ func (h *Helper) WithFields(fields map[string]interface{}) *Helper {
 }
 
 func (h *Helper) WithFunc(funcName string) *Helper {
-	return h.WithFields(map[string]interface{}{
+	return h.WithFields(map[string]any{
 		"func": funcName,
 	})
 }
