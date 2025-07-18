@@ -43,11 +43,8 @@ func (l *defaultLogger) String() string {
 }
 
 func (l *defaultLogger) Fields(fields map[string]interface{}) Logger {
-	zl := &defaultLogger{
-		opts:   l.opts,
-		fields: fields,
-	}
-	return zl
+	l.fields = fields
+	return l
 }
 
 func (l *defaultLogger) GetFields() map[string]interface{} {
