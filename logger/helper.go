@@ -48,10 +48,7 @@ func (h *Helper) copyFields() *haxmap.Map[string, any] {
 }
 
 func (h *Helper) Info(args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(InfoLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Log(InfoLevel, args...)
+	h.Infof("%+v", args...)
 }
 
 func (h *Helper) Infof(template string, args ...interface{}) {
@@ -62,10 +59,7 @@ func (h *Helper) Infof(template string, args ...interface{}) {
 }
 
 func (h *Helper) Trace(args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(TraceLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Log(TraceLevel, args...)
+	h.Tracef("%+v", args...)
 }
 
 func (h *Helper) Tracef(template string, args ...interface{}) {
@@ -76,10 +70,7 @@ func (h *Helper) Tracef(template string, args ...interface{}) {
 }
 
 func (h *Helper) Debug(args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(DebugLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Log(DebugLevel, args...)
+	h.Debugf("%+v", args...)
 }
 
 func (h *Helper) Debugf(template string, args ...interface{}) {
@@ -90,10 +81,7 @@ func (h *Helper) Debugf(template string, args ...interface{}) {
 }
 
 func (h *Helper) Warn(args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(WarnLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Log(WarnLevel, args...)
+	h.Warnf("%+v", args...)
 }
 
 func (h *Helper) Warnf(template string, args ...interface{}) {
@@ -104,10 +92,7 @@ func (h *Helper) Warnf(template string, args ...interface{}) {
 }
 
 func (h *Helper) Error(args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(ErrorLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Log(ErrorLevel, args...)
+	h.Errorf("%+v", args...)
 }
 
 func (h *Helper) Errorf(template string, args ...interface{}) {
@@ -118,11 +103,7 @@ func (h *Helper) Errorf(template string, args ...interface{}) {
 }
 
 func (h *Helper) Fatal(args ...interface{}) {
-	if !h.Logger.Options().Level.Enabled(FatalLevel) {
-		return
-	}
-	h.Logger.Fields(h.toFieldsMap()).Log(FatalLevel, args...)
-	os.Exit(1)
+	h.Fatalf("%+v", args...)
 }
 
 func (h *Helper) Fatalf(template string, args ...interface{}) {
