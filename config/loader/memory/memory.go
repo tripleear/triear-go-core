@@ -38,12 +38,14 @@ type updateValue struct {
 }
 
 type watcher struct {
-	exit    chan bool
-	path    []string
-	value   reader.Value
-	reader  reader.Reader
-	version string
-	updates chan updateValue
+	mu        sync.RWMutex
+	exit      chan bool
+	path      []string
+	value     reader.Value
+	reader    reader.Reader
+	version   string
+	updates   chan updateValue
+	closeOnce sync.Once
 }
 
 func (m *memory) watch(idx int, s source.Source) {
@@ -167,12 +169,19 @@ func (m *memory) update() {
 	m.RUnlock()
 
 	for _, w := range watchers {
+		w.mu.RLock()
 		if w.version >= snap.Version {
+			w.mu.RUnlock()
 			continue
 		}
+		w.mu.RUnlock()
+
+		m.RLock()
+		version := m.snap.Version
+		m.RUnlock()
 
 		uv := updateValue{
-			version: m.snap.Version,
+			version: version,
 			value:   vals.Get(w.path...),
 		}
 
@@ -371,9 +380,7 @@ func (m *memory) String() string {
 }
 
 func (w *watcher) Next() (*loader.Snapshot, error) {
-	update := func(v reader.Value) *loader.Snapshot {
-		w.value = v
-
+	update := func(v reader.Value, version string) *loader.Snapshot {
 		cs := &source.ChangeSet{
 			Data:      v.Bytes(),
 			Format:    w.reader.String(),
@@ -384,9 +391,8 @@ func (w *watcher) Next() (*loader.Snapshot, error) {
 
 		return &loader.Snapshot{
 			ChangeSet: cs,
-			Version:   w.version,
+			Version:   version,
 		}
-
 	}
 
 	for {
@@ -395,31 +401,31 @@ func (w *watcher) Next() (*loader.Snapshot, error) {
 			return nil, errors.New("watcher stopped")
 
 		case uv := <-w.updates:
+			w.mu.Lock()
 			if uv.version <= w.version {
+				w.mu.Unlock()
 				continue
 			}
 
-			v := uv.value
+			if bytes.Equal(w.value.Bytes(), uv.value.Bytes()) {
+				w.mu.Unlock()
+				continue
+			}
 
 			w.version = uv.version
+			w.value = uv.value
+			w.mu.Unlock()
 
-			if bytes.Equal(w.value.Bytes(), v.Bytes()) {
-				continue
-			}
-
-			return update(v), nil
+			return update(uv.value, uv.version), nil
 		}
 	}
 }
 
 func (w *watcher) Stop() error {
-	select {
-	case <-w.exit:
-	default:
+	w.closeOnce.Do(func() {
 		close(w.exit)
 		close(w.updates)
-	}
-
+	})
 	return nil
 }
 
