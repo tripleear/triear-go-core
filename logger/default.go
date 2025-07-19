@@ -68,6 +68,9 @@ func (l *defaultLogger) addDefaultFields(fields *haxmap.Map[string, any]) {
 }
 
 func (l *defaultLogger) fatalf(ctx context.Context, err error, format string, fields *haxmap.Map[string, any], args ...any) {
+	if err == nil && isEmptyInput(format, fields, args...) {
+		return
+	}
 	args = argsValidate(args)
 	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelFatal, err, format, args...)
 	f := l.logger.Fatal()
@@ -76,6 +79,9 @@ func (l *defaultLogger) fatalf(ctx context.Context, err error, format string, fi
 }
 
 func (l *defaultLogger) warnf(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
+	if isEmptyInput(format, fields, args...) {
+		return
+	}
 	args = argsValidate(args)
 	f := l.logger.Warn()
 	l.addDefaultFields(fields)
@@ -83,6 +89,9 @@ func (l *defaultLogger) warnf(_ context.Context, format string, fields *haxmap.M
 }
 
 func (l *defaultLogger) infof(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
+	if isEmptyInput(format, fields, args...) {
+		return
+	}
 	args = argsValidate(args)
 	f := l.logger.Info()
 	l.addDefaultFields(fields)
