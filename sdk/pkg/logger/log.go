@@ -3,6 +3,7 @@ package logger
 import (
 	"context"
 	"github.com/rs/zerolog"
+	"github.com/tripleear/triear-go-core/plugins/logger/logrus"
 	"io"
 	"os"
 
@@ -45,17 +46,18 @@ func SetupLogger(opts ...Option) logger.Logger {
 	if err != nil {
 		log.Fatalf(ctx, err, "get logger level error, %s", err.Error())
 	}
-
+	var defaultLogger log.Logger
 	switch op.driver {
 	case "zap":
-		log.DefaultLogger, err = zap.NewLogger(logger.WithLevel(level), zap.WithOutput(output), zap.WithCallerSkip(2))
+		defaultLogger, err = zap.NewLogger(logger.WithLevel(level), zap.WithOutput(output), zap.WithCallerSkip(2))
 		if err != nil {
 			log.Fatalf(ctx, err, "new zap logger error, %s", err.Error())
 		}
-	//case "logrus":
-	//	setLogger = logrus.NewLogger(logger.WithLevel(level), logger.WithOutput(output), logrus.ReportCaller())
+	case "logrus":
+		defaultLogger = logrus.NewLogger(logger.WithLevel(level), logger.WithOutput(output), logrus.ReportCaller())
 	default:
-		log.DefaultLogger = logger.NewLogger(logger.WithLevel(level), logger.WithOutput(output))
+		defaultLogger = logger.NewLogger(logger.WithLevel(level), logger.WithOutput(output))
 	}
-	return log.DefaultLogger
+	log.SetDefaultLogger(defaultLogger)
+	return log.GetDefaultLogger()
 }

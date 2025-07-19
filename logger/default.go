@@ -17,8 +17,7 @@ func init() {
 	if err != nil {
 		lvl = zerolog.InfoLevel
 	}
-
-	DefaultLogger = NewHelper(NewLogger(WithLevel(lvl)))
+	SetDefaultLogger(NewHelper(NewLogger(WithLevel(lvl))))
 }
 
 type defaultLogger struct {
@@ -219,7 +218,7 @@ func Info(ctx context.Context, args ...any) {
 }
 
 func Infof(ctx context.Context, format string, args ...any) {
-	DefaultLogger.Native().(*defaultLogger).infof(ctx, format, nil, args...)
+	GetDefaultLogger().Native().(*defaultLogger).infof(ctx, format, nil, args...)
 }
 
 func Trace(ctx context.Context, args ...any) {
@@ -227,7 +226,7 @@ func Trace(ctx context.Context, args ...any) {
 }
 
 func Tracef(ctx context.Context, format string, args ...any) {
-	DefaultLogger.Native().(*defaultLogger).debugf(ctx, format, nil, args...)
+	GetDefaultLogger().Native().(*defaultLogger).debugf(ctx, format, nil, args...)
 }
 
 func Debug(ctx context.Context, args ...any) {
@@ -235,7 +234,7 @@ func Debug(ctx context.Context, args ...any) {
 }
 
 func Debugf(ctx context.Context, format string, args ...any) {
-	DefaultLogger.Native().(*defaultLogger).debugf(ctx, format, nil, args...)
+	GetDefaultLogger().Native().(*defaultLogger).debugf(ctx, format, nil, args...)
 }
 
 func Warn(ctx context.Context, args ...any) {
@@ -243,7 +242,7 @@ func Warn(ctx context.Context, args ...any) {
 }
 
 func Warnf(ctx context.Context, format string, args ...any) {
-	DefaultLogger.Native().(*defaultLogger).warnf(ctx, format, nil, args...)
+	GetDefaultLogger().Native().(*defaultLogger).warnf(ctx, format, nil, args...)
 }
 
 func Error(ctx context.Context, err error, args ...any) {
@@ -251,7 +250,7 @@ func Error(ctx context.Context, err error, args ...any) {
 }
 
 func Errorf(ctx context.Context, err error, format string, args ...any) {
-	DefaultLogger.Native().(*defaultLogger).errorf(ctx, nil, format, nil, args...)
+	GetDefaultLogger().Native().(*defaultLogger).errorf(ctx, nil, format, nil, args...)
 }
 
 func Fatal(ctx context.Context, err error, args ...any) {
@@ -259,5 +258,5 @@ func Fatal(ctx context.Context, err error, args ...any) {
 }
 
 func Fatalf(ctx context.Context, err error, format string, args ...any) {
-	DefaultLogger.Native().(*defaultLogger).fatalf(ctx, nil, format, nil, args...)
+	GetDefaultLogger().Native().(*defaultLogger).fatalf(ctx, nil, format, nil, args...)
 }

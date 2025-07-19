@@ -14,7 +14,7 @@ func TestNew(t *testing.T) {
 		SlowThreshold: time.Second,
 		Colorful:      true,
 		LogLevel: logger.LogLevel(
-			logCore.DefaultLogger.Options().Level),
+			logCore.GetDefaultLogger().Options().Level),
 	})
 	l.Info(context.TODO(), "test")
 }
