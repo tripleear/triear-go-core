@@ -41,12 +41,12 @@ func (l *Logger) LogModel(model [][]string) {
 		}
 		str += "\n"
 	}
-	logger.GetDefaultLogger().Log(context.Background(), zerolog.InfoLevel, str)
+	logger.DefaultLogger.GetLogger().Log(context.Background(), zerolog.InfoLevel, str)
 }
 
 // LogEnforce log info related to enforce.
 func (l *Logger) LogEnforce(matcher string, request []interface{}, result bool, explains [][]string) {
-	logger.GetDefaultLogger().Fields(map[string]interface{}{
+	logger.DefaultLogger.GetLogger().Fields(map[string]interface{}{
 		"matcher":  matcher,
 		"request":  request,
 		"result":   result,
@@ -56,7 +56,7 @@ func (l *Logger) LogEnforce(matcher string, request []interface{}, result bool, 
 
 // LogRole log info related to role.
 func (l *Logger) LogRole(roles []string) {
-	logger.GetDefaultLogger().Fields(map[string]interface{}{
+	logger.DefaultLogger.GetLogger().Fields(map[string]interface{}{
 		"roles": roles,
 	})
 }
@@ -67,17 +67,17 @@ func (l *Logger) LogPolicy(policy map[string][][]string) {
 	for k := range policy {
 		data[k] = policy[k]
 	}
-	logger.GetDefaultLogger().Fields(data).Log(context.Background(), zerolog.InfoLevel, nil)
+	logger.DefaultLogger.GetLogger().Fields(data).Log(context.Background(), zerolog.InfoLevel, nil)
 }
 
 //func (l *Logger) Print(v ...interface{}) {
 //	if l.IsEnabled() {
-//		logger.GetDefaultLogger().Log(logger.InfoLevel, v...)
+//		logger.DefaultLogger.GetLogger().Log(logger.InfoLevel, v...)
 //	}
 //}
 //
 //func (l *Logger) Printf(format string, v ...interface{}) {
 //	if l.IsEnabled() {
-//		logger.GetDefaultLogger().Logf(logger.InfoLevel, format, v...)
+//		logger.DefaultLogger.GetLogger().Logf(logger.InfoLevel, format, v...)
 //	}
 //}

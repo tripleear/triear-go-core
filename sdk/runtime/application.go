@@ -171,12 +171,13 @@ func (e *Application) setRouter() []Router {
 
 // SetLogger 设置日志组件
 func (e *Application) SetLogger(l logger.Logger) {
-	logger.SetDefaultLogger(l)
+	logger.DefaultLogger.SetLogger(
+		l)
 }
 
 // GetLogger 获取日志组件
 func (e *Application) GetLogger() logger.Logger {
-	return logger.GetDefaultLogger()
+	return logger.DefaultLogger.GetLogger()
 }
 
 // NewConfig 默认值

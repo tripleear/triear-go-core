@@ -37,11 +37,11 @@ type gormLogger struct {
 func (l *gormLogger) getLogger(ctx context.Context) loggerCore.Logger {
 	requestId := ctx.Value("X-Request-Id")
 	if requestId != nil {
-		return loggerCore.GetDefaultLogger().Fields(map[string]interface{}{
+		return loggerCore.DefaultLogger.GetLogger().Fields(map[string]interface{}{
 			"x-request-id": requestId,
 		})
 	}
-	return loggerCore.GetDefaultLogger()
+	return loggerCore.DefaultLogger.GetLogger()
 }
 
 // LogMode log mode

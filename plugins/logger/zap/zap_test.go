@@ -29,7 +29,8 @@ func TestLogf(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger.SetDefaultLogger(l)
+	logger.DefaultLogger.SetLogger(
+		l)
 	ctx := context.Background()
 	logger.Logf(ctx, zerolog.InfoLevel, "test logf: %s", "name")
 }
@@ -39,7 +40,8 @@ func TestSetLevel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.SetDefaultLogger(l)
+	logger.DefaultLogger.SetLogger(
+		l)
 
 	ctx := context.Background()
 	logger.Init(logger.WithLevel(zerolog.DebugLevel))
@@ -52,7 +54,8 @@ func TestSetLevel(t *testing.T) {
 func TestWithReportCaller(t *testing.T) {
 	var err error
 	defaultLogger, err := NewLogger(WithCallerSkip(0))
-	logger.SetDefaultLogger(defaultLogger)
+	logger.DefaultLogger.SetLogger(
+		defaultLogger)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -65,11 +68,12 @@ func TestFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.SetDefaultLogger(l.Fields(map[string]interface{}{
-		"x-request-id": "123456abc",
-	}))
+	logger.DefaultLogger.SetLogger(
+		l.Fields(map[string]interface{}{
+			"x-request-id": "123456abc",
+		}))
 	ctx := context.Background()
-	logger.GetDefaultLogger().Log(ctx, zerolog.InfoLevel, "hello")
+	logger.DefaultLogger.GetLogger().Log(ctx, zerolog.InfoLevel, "hello")
 }
 
 func TestFile(t *testing.T) {
@@ -80,15 +84,17 @@ func TestFile(t *testing.T) {
 	//var err error
 	ctx := context.Background()
 	defaultLogger, err := NewLogger(logger.WithLevel(zerolog.DebugLevel), WithOutput(output))
-	logger.SetDefaultLogger(defaultLogger)
+	logger.DefaultLogger.SetLogger(
+		defaultLogger)
 	if err != nil {
 		t.Errorf("logger setup error: %s", err.Error())
 	}
-	logger.SetDefaultLogger(logger.GetDefaultLogger().Fields(map[string]interface{}{
-		"x-request-id": "123456abc",
-	}))
-	fmt.Println(logger.GetDefaultLogger())
-	logger.GetDefaultLogger().Log(ctx, zerolog.DebugLevel, "hello")
+	logger.DefaultLogger.SetLogger(
+		logger.DefaultLogger.GetLogger().Fields(map[string]interface{}{
+			"x-request-id": "123456abc",
+		}))
+	fmt.Println(logger.DefaultLogger.GetLogger())
+	logger.DefaultLogger.GetLogger().Log(ctx, zerolog.DebugLevel, "hello")
 }
 
 //func TestFileKeep(t *testing.T) {

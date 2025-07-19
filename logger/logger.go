@@ -8,21 +8,22 @@ import (
 
 var (
 	// DefaultLogger logger
-	DefaultLogger Logger
-	loggerMu      sync.Mutex
+	DefaultLogger = &LoggerWrapper{}
 )
 
-// SetDefaultLogger 只允许初始化阶段调用，支持多次Set（两次）
-// 之后不再调用 Set
-func SetDefaultLogger(l Logger) {
-	loggerMu.Lock()
-	defer loggerMu.Unlock()
-	DefaultLogger = l
+type LoggerWrapper struct {
+	mu     sync.RWMutex
+	logger Logger
 }
 
-// GetDefaultLogger 不加锁，假设调用时初始化已完成
-func GetDefaultLogger() Logger {
-	return DefaultLogger
+func (w *LoggerWrapper) SetLogger(l Logger) {
+	w.logger = l
+}
+
+func (w *LoggerWrapper) GetLogger() Logger {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	return w.logger
 }
 
 // Logger is a generic logging interface
@@ -46,21 +47,21 @@ type Logger interface {
 }
 
 func Init(opts ...Option) error {
-	return GetDefaultLogger().Init(opts...)
+	return DefaultLogger.GetLogger().Init(opts...)
 }
 
 func Fields(fields map[string]interface{}) Logger {
-	return GetDefaultLogger().Fields(fields)
+	return DefaultLogger.GetLogger().Fields(fields)
 }
 
 func Log(ctx context.Context, level zerolog.Level, v ...interface{}) {
-	GetDefaultLogger().Log(ctx, level, v...)
+	DefaultLogger.GetLogger().Log(ctx, level, v...)
 }
 
 func Logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
-	GetDefaultLogger().Logf(ctx, level, format, v...)
+	DefaultLogger.GetLogger().Logf(ctx, level, format, v...)
 }
 
 func String() string {
-	return GetDefaultLogger().String()
+	return DefaultLogger.GetLogger().String()
 }
