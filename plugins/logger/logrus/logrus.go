@@ -90,6 +90,10 @@ func (l *logrusLogger) Native() any {
 	return l
 }
 
+func (l *logrusLogger) GetLogger() any {
+	return l.Logger
+}
+
 func (l *logrusLogger) Log(ctx context.Context, _ zerolog.Level, args ...interface{}) {
 	l.Logger.Log(loggerToLogrusLevel(l.opts.Level), args...)
 }

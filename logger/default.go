@@ -33,6 +33,10 @@ func (l *defaultLogger) Native() any {
 	return l
 }
 
+func (l *defaultLogger) GetLogger() any {
+	return l.logger
+}
+
 // Init (opts...) should only overwrite provided options
 func (l *defaultLogger) Init(opts ...Option) error {
 	for _, o := range opts {

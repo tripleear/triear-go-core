@@ -26,6 +26,8 @@ type Logger interface {
 	String() string
 
 	Native() any
+
+	GetLogger() any
 }
 
 func Init(opts ...Option) error {

@@ -147,6 +147,10 @@ func (l *zaplog) Native() any {
 	return l
 }
 
+func (l *zaplog) GetLogger() any {
+	return l.zap
+}
+
 func (l *zaplog) Logf(ctx context.Context, _ zerolog.Level, format string, args ...interface{}) {
 	l.RLock()
 	data := make([]zap.Field, 0, len(l.fields))
