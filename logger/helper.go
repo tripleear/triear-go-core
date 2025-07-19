@@ -17,19 +17,23 @@ func NewHelper(log Logger) *Helper {
 
 func (h *Helper) toFieldsMap() map[string]any {
 	result := make(map[string]any)
-	h.kv.ForEach(func(key string, value any) bool {
-		result[key] = value
-		return true // 继续迭代
-	})
+	if h.kv != nil {
+		h.kv.ForEach(func(key string, value any) bool {
+			result[key] = value
+			return true // 继续迭代
+		})
+	}
 	return result
 }
 
 func (h *Helper) copyFields() *haxmap.Map[string, any] {
 	r := haxmap.New[string, any]()
-	h.kv.ForEach(func(k string, v any) bool {
-		r.Set(k, v)
-		return true
-	})
+	if h.kv != nil {
+		h.kv.ForEach(func(k string, v any) bool {
+			r.Set(k, v)
+			return true
+		})
+	}
 	return r
 }
 
