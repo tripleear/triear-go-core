@@ -62,15 +62,18 @@ func (l *defaultLogger) GetFields() map[string]any {
 	return l.fields
 }
 
-func (l *defaultLogger) addDefaultFields(fields *haxmap.Map[string, any]) {
+func (l *defaultLogger) addDefaultFields(fields *haxmap.Map[string, any]) *haxmap.Map[string, any] {
 	l.Lock()
 	defer l.Unlock()
+
 	if fields == nil {
 		fields = haxmap.New[string, any]()
 	}
+
 	for k, v := range l.fields {
 		fields.Set(k, v)
 	}
+	return fields
 }
 
 func (l *defaultLogger) fatalf(ctx context.Context, err error, format string, fields *haxmap.Map[string, any], args ...any) {
@@ -80,8 +83,7 @@ func (l *defaultLogger) fatalf(ctx context.Context, err error, format string, fi
 	args = argsValidate(args)
 	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelFatal, err, format, args...)
 	f := l.logger.Fatal()
-	l.addDefaultFields(fields)
-	wrap(f, fields).Err(err).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Err(err).Msgf(format, args...)
 }
 
 func (l *defaultLogger) warnf(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
@@ -100,22 +102,19 @@ func (l *defaultLogger) infof(_ context.Context, format string, fields *haxmap.M
 	}
 	args = argsValidate(args)
 	f := l.logger.Info()
-	l.addDefaultFields(fields)
-	wrap(f, fields).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Msgf(format, args...)
 }
 
 func (l *defaultLogger) debugf(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
 	args = argsValidate(args)
 	f := l.logger.Debug()
-	l.addDefaultFields(fields)
-	wrap(f, fields).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Msgf(format, args...)
 }
 
 func (l *defaultLogger) tracef(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
 	args = argsValidate(args)
 	f := l.logger.Debug()
-	l.addDefaultFields(fields)
-	wrap(f, fields).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Msgf(format, args...)
 }
 
 func (l *defaultLogger) errorf(ctx context.Context, err error, format string, fields *haxmap.Map[string, any], args ...any) {
@@ -125,8 +124,7 @@ func (l *defaultLogger) errorf(ctx context.Context, err error, format string, fi
 	args = argsValidate(args)
 	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelError, err, format, args...)
 	f := l.logger.Error()
-	l.addDefaultFields(fields)
-	wrap(f, fields).Stack().Err(err).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Stack().Err(err).Msgf(format, args...)
 }
 
 func copyFields(src map[string]any) map[string]any {
