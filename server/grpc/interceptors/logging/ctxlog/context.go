@@ -17,7 +17,7 @@ type ctxLogger struct {
 
 var (
 	ctxMarkerKey = &ctxMarker{}
-	nullLogger   = logger.NewHelper(logger.DefaultLogger.GetLogger())
+	nullLogger   = logger.NewHelper(logger.LoggerWrapper.GetLogger())
 )
 
 // AddFields adds logger fields to the logger.

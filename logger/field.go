@@ -34,12 +34,12 @@ func (f *LogFields) WithField(key string, value any) *LogFields {
 
 // Fatalf forwards to sentry
 func (f *LogFields) Fatalf(ctx context.Context, err error, format string, args ...any) {
-	DefaultLogger.GetLogger().Native().(*defaultLogger).fatalf(ctx, err, format, f.kv, args...)
+	LoggerWrapper.GetLogger().Native().(*defaultLogger).fatalf(ctx, err, format, f.kv, args...)
 }
 
 // Warnf is Warnf
 func (f *LogFields) Warnf(ctx context.Context, format string, args ...any) {
-	DefaultLogger.GetLogger().Native().(*defaultLogger).warnf(ctx, format, f.kv, args...)
+	LoggerWrapper.GetLogger().Native().(*defaultLogger).warnf(ctx, format, f.kv, args...)
 }
 
 // Warn is Warn
@@ -49,7 +49,7 @@ func (f *LogFields) Warn(ctx context.Context, args ...any) {
 
 // Infof is Infof
 func (f *LogFields) Infof(ctx context.Context, format string, args ...any) {
-	DefaultLogger.GetLogger().Native().(*defaultLogger).infof(ctx, format, f.kv, args...)
+	LoggerWrapper.GetLogger().Native().(*defaultLogger).infof(ctx, format, f.kv, args...)
 }
 
 // Info is Info
@@ -59,7 +59,7 @@ func (f *LogFields) Info(ctx context.Context, args ...any) {
 
 // Debugf is Debugf
 func (f *LogFields) Debugf(ctx context.Context, format string, args ...any) {
-	DefaultLogger.GetLogger().Native().(*defaultLogger).debugf(ctx, format, f.kv, args...)
+	LoggerWrapper.GetLogger().Native().(*defaultLogger).debugf(ctx, format, f.kv, args...)
 }
 
 // Debug is Debug
@@ -69,7 +69,7 @@ func (f *LogFields) Debug(ctx context.Context, args ...any) {
 
 // Errorf forwards to sentry
 func (f *LogFields) Errorf(ctx context.Context, err error, format string, args ...any) {
-	DefaultLogger.GetLogger().Native().(*defaultLogger).errorf(ctx, err, format, f.kv, args...)
+	LoggerWrapper.GetLogger().Native().(*defaultLogger).errorf(ctx, err, format, f.kv, args...)
 }
 
 // Error forwards to sentry

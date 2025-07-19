@@ -28,7 +28,7 @@ func TestWithFields(t *testing.T) {
 		"k2": 123456,
 	})
 
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		l)
 
 	ctx := context.Background()
@@ -38,7 +38,7 @@ func TestWithFields(t *testing.T) {
 
 func TestWithError(t *testing.T) {
 	l := NewLogger().Fields(map[string]interface{}{"error": errors.New("boom!")})
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		l)
 	ctx := context.Background()
 	logger.Log(ctx, zerolog.ErrorLevel, "testing: error")
@@ -50,7 +50,7 @@ func TestWithLogger(t *testing.T) {
 		"k1": "v1",
 		"k2": 123456,
 	})
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		l)
 	ctx := context.Background()
 	logger.Log(ctx, zerolog.InfoLevel, "testing: with *logrus.Logger")
@@ -60,20 +60,20 @@ func TestWithLogger(t *testing.T) {
 		"k3": 3.456,
 		"k4": true,
 	})
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		el)
 	logger.Log(ctx, zerolog.InfoLevel, "testing: with *logrus.Entry")
 }
 
 func TestJSON(t *testing.T) {
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		NewLogger(WithJSONFormatter(&logrus.JSONFormatter{})))
 	ctx := context.Background()
 	logger.Logf(ctx, zerolog.InfoLevel, "test logf: %s", "name")
 }
 
 func TestSetLevel(t *testing.T) {
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		NewLogger())
 	ctx := context.Background()
 	logger.Init(logger.WithLevel(zerolog.DebugLevel))
@@ -84,7 +84,7 @@ func TestSetLevel(t *testing.T) {
 }
 
 func TestWithReportCaller(t *testing.T) {
-	logger.DefaultLogger.SetLogger(
+	logger.LoggerWrapper.SetLogger(
 		NewLogger(ReportCaller()))
 	ctx := context.Background()
 	logger.Logf(ctx, zerolog.DebugLevel, "testing: %s", "WithReportCaller")
