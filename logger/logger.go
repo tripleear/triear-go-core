@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	// LoggerWrapper logger
-	LoggerWrapper = &loggerWrapper{}
+	// Wrapper logger
+	Wrapper = &loggerWrapper{}
 )
 
 type loggerWrapper struct {
@@ -51,21 +51,21 @@ type Logger interface {
 }
 
 func Init(opts ...Option) error {
-	return LoggerWrapper.GetLogger().Init(opts...)
+	return Wrapper.GetLogger().Init(opts...)
 }
 
 func Fields(fields map[string]interface{}) Logger {
-	return LoggerWrapper.GetLogger().Fields(fields)
+	return Wrapper.GetLogger().Fields(fields)
 }
 
 func Log(ctx context.Context, level zerolog.Level, v ...interface{}) {
-	LoggerWrapper.GetLogger().Log(ctx, level, v...)
+	Wrapper.GetLogger().Log(ctx, level, v...)
 }
 
 func Logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
-	LoggerWrapper.GetLogger().Logf(ctx, level, format, v...)
+	Wrapper.GetLogger().Logf(ctx, level, format, v...)
 }
 
 func String() string {
-	return LoggerWrapper.GetLogger().String()
+	return Wrapper.GetLogger().String()
 }

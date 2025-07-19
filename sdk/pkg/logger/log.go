@@ -58,7 +58,7 @@ func SetupLogger(opts ...Option) logger.Logger {
 	default:
 		defaultLogger = logger.NewLogger(logger.WithLevel(level), logger.WithOutput(output))
 	}
-	log.LoggerWrapper.SetLogger(
+	log.Wrapper.SetLogger(
 		defaultLogger)
-	return log.LoggerWrapper.GetLogger()
+	return log.Wrapper.GetLogger()
 }

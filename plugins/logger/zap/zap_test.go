@@ -29,7 +29,7 @@ func TestLogf(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	logger.LoggerWrapper.SetLogger(
+	logger.Wrapper.SetLogger(
 		l)
 	ctx := context.Background()
 	logger.Logf(ctx, zerolog.InfoLevel, "test logf: %s", "name")
@@ -40,7 +40,7 @@ func TestSetLevel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.LoggerWrapper.SetLogger(
+	logger.Wrapper.SetLogger(
 		l)
 
 	ctx := context.Background()
@@ -54,7 +54,7 @@ func TestSetLevel(t *testing.T) {
 func TestWithReportCaller(t *testing.T) {
 	var err error
 	defaultLogger, err := NewLogger(WithCallerSkip(0))
-	logger.LoggerWrapper.SetLogger(
+	logger.Wrapper.SetLogger(
 		defaultLogger)
 	if err != nil {
 		t.Fatal(err)
@@ -68,12 +68,12 @@ func TestFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	logger.LoggerWrapper.SetLogger(
+	logger.Wrapper.SetLogger(
 		l.Fields(map[string]interface{}{
 			"x-request-id": "123456abc",
 		}))
 	ctx := context.Background()
-	logger.LoggerWrapper.GetLogger().Log(ctx, zerolog.InfoLevel, "hello")
+	logger.Wrapper.GetLogger().Log(ctx, zerolog.InfoLevel, "hello")
 }
 
 func TestFile(t *testing.T) {
@@ -84,17 +84,17 @@ func TestFile(t *testing.T) {
 	//var err error
 	ctx := context.Background()
 	defaultLogger, err := NewLogger(logger.WithLevel(zerolog.DebugLevel), WithOutput(output))
-	logger.LoggerWrapper.SetLogger(
+	logger.Wrapper.SetLogger(
 		defaultLogger)
 	if err != nil {
 		t.Errorf("logger setup error: %s", err.Error())
 	}
-	logger.LoggerWrapper.SetLogger(
-		logger.LoggerWrapper.GetLogger().Fields(map[string]interface{}{
+	logger.Wrapper.SetLogger(
+		logger.Wrapper.GetLogger().Fields(map[string]interface{}{
 			"x-request-id": "123456abc",
 		}))
-	fmt.Println(logger.LoggerWrapper.GetLogger())
-	logger.LoggerWrapper.GetLogger().Log(ctx, zerolog.DebugLevel, "hello")
+	fmt.Println(logger.Wrapper.GetLogger())
+	logger.Wrapper.GetLogger().Log(ctx, zerolog.DebugLevel, "hello")
 }
 
 //func TestFileKeep(t *testing.T) {
@@ -103,11 +103,11 @@ func TestFile(t *testing.T) {
 //		t.Errorf("logger setup error: %s", err.Error())
 //	}
 //	//var err error
-//	logger.LoggerWrapper, err = NewLogger(logger.WithLevel(logger.TraceLevel), WithOutput(output))
+//	logger.Wrapper, err = NewLogger(logger.WithLevel(logger.TraceLevel), WithOutput(output))
 //	if err != nil {
 //		t.Errorf("logger setup error: %s", err.Error())
 //	}
 //
-//	fmt.Println(logger.LoggerWrapper)
+//	fmt.Println(logger.Wrapper)
 //	logger.
 //}

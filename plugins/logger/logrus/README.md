@@ -13,13 +13,13 @@ import (
 )
 
 func ExampleWithOutput() {
-	logger.LoggerWrapper = NewLogger(logger.WithOutput(os.Stdout))
+	logger.Wrapper = NewLogger(logger.WithOutput(os.Stdout))
 	logger.Infof("testing: %s", "Infof")
 }
 
 func ExampleWithLogger() {
 	l := logrus.New() // *logrus.Logger
-	logger.LoggerWrapper = NewLogger(WithLogger(l))
+	logger.Wrapper = NewLogger(WithLogger(l))
     ctx := context.Background()
 	logger.Infof(ctx, "testing: %s", "Infof")
 }
