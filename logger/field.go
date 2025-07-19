@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"github.com/rs/zerolog"
 
 	"github.com/alphadose/haxmap"
 )
@@ -75,4 +76,12 @@ func (f *LogFields) Errorf(ctx context.Context, err error, format string, args .
 // Error forwards to sentry
 func (f *LogFields) Error(ctx context.Context, err error, args ...any) {
 	f.Errorf(ctx, err, "%+v", args...)
+}
+
+func (f *LogFields) Log(ctx context.Context, level zerolog.Level, v ...interface{}) {
+	f.Logf(ctx, level, "%+v", v...)
+}
+
+func (f *LogFields) Logf(ctx context.Context, level zerolog.Level, format string, v ...interface{}) {
+	Wrapper.GetLogger().Native().(*defaultLogger).logf(ctx, level, format, f.kv, v...)
 }

@@ -116,9 +116,6 @@ func (l *defaultLogger) tracef(_ context.Context, format string, fields *haxmap.
 }
 
 func (l *defaultLogger) errorf(ctx context.Context, err error, format string, fields *haxmap.Map[string, any], args ...any) {
-	if err == nil {
-		return
-	}
 	args = argsValidate(args)
 	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelError, err, format, args...)
 	f := l.logger.Error()
@@ -134,14 +131,14 @@ func copyFields(src map[string]any) map[string]any {
 }
 
 func (l *defaultLogger) Log(ctx context.Context, level zerolog.Level, v ...any) {
-	l.logf(ctx, level, "%+v", v...)
+	l.logf(ctx, level, "%+v", nil, v...)
 }
 
 func (l *defaultLogger) Logf(ctx context.Context, level zerolog.Level, format string, v ...any) {
-	l.logf(ctx, level, format, v...)
+	l.logf(ctx, level, format, nil, v...)
 }
 
-func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format string, v ...any) {
+func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format string, fields *haxmap.Map[string, any], v ...any) {
 	if int(level) == -1 {
 		l.debugf(ctx, format, nil, v...)
 		return
@@ -154,16 +151,15 @@ func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format st
 	case zerolog.WarnLevel:
 		l.warnf(ctx, format, nil, v...)
 	case zerolog.ErrorLevel:
-		l.errorf(ctx, nil, format, nil, v...)
+		l.errorf(ctx, fmt.Errorf("error occured"), format, fields, v...)
 	case zerolog.FatalLevel:
-		l.errorf(ctx, nil, format, nil, v...)
+		l.errorf(ctx, fmt.Errorf("error occured"), format, fields, v...)
 	case zerolog.PanicLevel:
-
-		l.fatalf(ctx, nil, format, nil, v...)
+		l.fatalf(ctx, fmt.Errorf("panic occured"), format, fields, v...)
 	case zerolog.NoLevel:
-		l.errorf(ctx, fmt.Errorf("no log level in coere"), format, nil, v...)
+		l.errorf(ctx, fmt.Errorf("no log level in coere"), format, fields, v...)
 	default:
-		l.errorf(ctx, fmt.Errorf("nuknown log level in coere"), format, nil, v...)
+		l.errorf(ctx, fmt.Errorf("nuknown log level in coere"), format, fields, v...)
 	}
 }
 
