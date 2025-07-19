@@ -8,19 +8,19 @@ import (
 
 var (
 	// DefaultLogger logger
-	DefaultLogger = &LoggerWrapper{}
+	DefaultLogger = &loggerWrapper{}
 )
 
-type LoggerWrapper struct {
+type loggerWrapper struct {
 	mu     sync.RWMutex
 	logger Logger
 }
 
-func (w *LoggerWrapper) SetLogger(l Logger) {
+func (w *loggerWrapper) SetLogger(l Logger) {
 	w.logger = l
 }
 
-func (w *LoggerWrapper) GetLogger() Logger {
+func (w *loggerWrapper) GetLogger() Logger {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 	return w.logger
