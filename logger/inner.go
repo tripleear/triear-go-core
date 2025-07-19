@@ -24,7 +24,7 @@ func wrap(f *zerolog.Event, kv *haxmap.Map[string, any]) *zerolog.Event {
 }
 
 func isEmptyInput(format string, fields *haxmap.Map[string, any], args ...any) bool {
-	if format == "" && fields == nil && len(args) == 0 {
+	if format == "" && (fields == nil || fields.Len() == 0) && len(args) == 0 {
 		return true
 	}
 	return false

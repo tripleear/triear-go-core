@@ -92,8 +92,7 @@ func (l *defaultLogger) warnf(_ context.Context, format string, fields *haxmap.M
 	}
 	args = argsValidate(args)
 	f := l.logger.Warn()
-	l.addDefaultFields(fields)
-	wrap(f, fields).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Msgf(format, args...)
 }
 
 func (l *defaultLogger) infof(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
