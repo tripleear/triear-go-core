@@ -17,13 +17,17 @@ type loggerWrapper struct {
 }
 
 func (w *loggerWrapper) SetLogger(l Logger) {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
 	w.logger = l
 }
 
 func (w *loggerWrapper) GetLogger() Logger {
-	w.mu.RLock()
-	defer w.mu.RUnlock()
 	return w.logger
+}
+
+func (w *loggerWrapper) GetExecLogger() any {
+	return w.logger.GetLogger()
 }
 
 // Logger is a generic logging interface
