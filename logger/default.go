@@ -196,6 +196,9 @@ func NewLogger(opts ...Option) Logger {
 		}).With().Timestamp().Logger()
 	rslog = rslog.Level(l.opts.Level)
 	zerolog.ErrorStackMarshaler = func(err error) any {
+		if err == nil {
+			return nil
+		}
 		return errors.GetSafeDetails(err).SafeDetails
 	}
 	l.logger = &rslog
