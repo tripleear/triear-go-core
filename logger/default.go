@@ -63,6 +63,8 @@ func (l *defaultLogger) GetFields() map[string]any {
 }
 
 func (l *defaultLogger) addDefaultFields(fields *haxmap.Map[string, any]) {
+	l.Lock()
+	defer l.Unlock()
 	if fields == nil {
 		fields = haxmap.New[string, any]()
 	}
