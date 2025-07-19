@@ -145,11 +145,11 @@ func (l *defaultLogger) logf(ctx context.Context, level zerolog.Level, format st
 	}
 	switch level {
 	case zerolog.DebugLevel:
-		l.debugf(ctx, format, nil, v...)
+		l.debugf(ctx, format, fields, v...)
 	case zerolog.InfoLevel:
-		l.infof(ctx, format, nil, v...)
+		l.infof(ctx, format, fields, v...)
 	case zerolog.WarnLevel:
-		l.warnf(ctx, format, nil, v...)
+		l.warnf(ctx, format, fields, v...)
 	case zerolog.ErrorLevel:
 		l.errorf(ctx, fmt.Errorf("error occured"), format, fields, v...)
 	case zerolog.FatalLevel:
