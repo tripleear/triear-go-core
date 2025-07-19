@@ -3,7 +3,11 @@ package logger
 import (
 	"github.com/alphadose/haxmap"
 	"github.com/rs/zerolog"
+	"regexp"
+	"strings"
 )
+
+var simpleFormatPattern = regexp.MustCompile(`^%[\+#]*[vTtbcdoqxXUbeEfFgGsqxXp]\s*$`)
 
 func argsValidate(args []any) []any {
 	if len(args) > 0 {
@@ -24,8 +28,16 @@ func wrap(f *zerolog.Event, kv *haxmap.Map[string, any]) *zerolog.Event {
 }
 
 func isEmptyInput(format string, fields *haxmap.Map[string, any], args ...any) bool {
-	if format == "" && (fields == nil || fields.Len() == 0) && len(args) == 0 {
-		return true
+	// 只要 args 有内容，不为空
+	if len(args) > 0 {
+		return false
 	}
-	return false
+	// 只要 fields 非 nil 且不为空
+	if fields != nil && fields.Len() > 0 {
+		return false
+	}
+
+	// 格式串为空，或者是单纯的格式符
+	trimmed := strings.TrimSpace(format)
+	return trimmed == "" || simpleFormatPattern.MatchString(trimmed)
 }
