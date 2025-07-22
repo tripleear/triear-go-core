@@ -2,6 +2,7 @@ package logger
 
 import (
 	"github.com/alphadose/haxmap"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"regexp"
 	"strings"
@@ -40,4 +41,17 @@ func isEmptyInput(format string, fields *haxmap.Map[string, any], args ...any) b
 	// 格式串为空，或者是单纯的格式符
 	trimmed := strings.TrimSpace(format)
 	return trimmed == "" || simpleFormatPattern.MatchString(trimmed)
+}
+
+func ensureStack(err error) error {
+	if err == nil {
+		return nil
+	}
+	type stackTracer interface {
+		StackTrace() errors.StackTrace
+	}
+	if _, ok := err.(stackTracer); !ok {
+		return errors.WithStack(err)
+	}
+	return err
 }

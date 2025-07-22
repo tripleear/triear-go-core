@@ -82,7 +82,7 @@ func (l *defaultLogger) fatalf(ctx context.Context, err error, format string, fi
 	args = argsValidate(args)
 	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelFatal, err, format, args...)
 	f := l.logger.Fatal()
-	wrap(f, l.addDefaultFields(fields)).Err(err).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Stack().Err(ensureStack(err)).Msgf(format, args...)
 }
 
 func (l *defaultLogger) warnf(_ context.Context, format string, fields *haxmap.Map[string, any], args ...any) {
@@ -119,7 +119,7 @@ func (l *defaultLogger) errorf(ctx context.Context, err error, format string, fi
 	args = argsValidate(args)
 	reportToSentry(ctx, l.opts.SentryDSN, sentry.LevelError, err, format, args...)
 	f := l.logger.Error()
-	wrap(f, l.addDefaultFields(fields)).Stack().Err(err).Msgf(format, args...)
+	wrap(f, l.addDefaultFields(fields)).Stack().Err(ensureStack(err)).Msgf(format, args...)
 }
 
 func copyFields(src map[string]any) map[string]any {
@@ -199,6 +199,7 @@ func NewLogger(opts ...Option) Logger {
 		if err == nil {
 			return nil
 		}
+		err = ensureStack(err)
 		return errors.GetSafeDetails(err).SafeDetails
 	}
 	l.logger = &rslog
