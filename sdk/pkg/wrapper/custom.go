@@ -16,6 +16,7 @@ func (cli *RedisClient) HGetWithPrefixInPipeline(ctx context.Context, p redis.Pi
 	fullKey := cachePrefix + key
 	return p.HGet(ctx, fullKey, field)
 }
+
 func (cli *RedisClient) HGetAllWithPrefixInPipeline(ctx context.Context, p redis.Pipeliner, key string) *redis.MapStringStringCmd {
 	cachePrefix := GetCachePrefixFromContext(ctx)
 	fullKey := cachePrefix + key
