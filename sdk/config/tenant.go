@@ -1,13 +1,9 @@
 package config
 
 type HostTenants struct {
-	Tenants []*Tenant `yaml:"tenants"`
-	Db      *Database `yaml:"db"`
-}
-
-type Tenant struct {
-	Id  uint64 `yaml:"id"`
-	Key string `yaml:"key"`
+	Id  uint64    `yaml:"id"`
+	Key string    `yaml:"key"`
+	Db  *Database `yaml:"db"`
 }
 
 var (
