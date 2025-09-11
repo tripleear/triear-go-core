@@ -1,8 +1,8 @@
 package config
 
 type HostTenants struct {
-	Tenants map[string]*Tenant `yaml:"tenants"`
-	Db      *Database          `yaml:"db"`
+	Tenants []*Tenant `yaml:"tenants"`
+	Db      *Database `yaml:"db"`
 }
 
 type Tenant struct {
