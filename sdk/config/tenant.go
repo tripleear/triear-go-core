@@ -11,5 +11,5 @@ type Tenant struct {
 }
 
 var (
-	HostTenantsConfig = new(HostTenants)
+	HostTenantsConfig = make(map[string]*HostTenants)
 )
