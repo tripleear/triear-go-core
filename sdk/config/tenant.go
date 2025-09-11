@@ -7,5 +7,5 @@ type HostTenant struct {
 }
 
 var (
-	HostTenantConfig = make(map[string]*HostTenant)
+	HostTenantsConfig = make(map[string]*HostTenant)
 )
