@@ -43,19 +43,19 @@ func (e *Settings) init() {
 
 // Config 配置集合
 type Config struct {
-	Application *Application             `yaml:"application"`
-	Ssl         *Ssl                     `yaml:"ssl"`
-	Logger      *Logger                  `yaml:"logger"`
-	Jwt         *Jwt                     `yaml:"jwt"`
-	Database    *Database                `yaml:"database"`
-	Databases   *map[string]*Database    `yaml:"databases"`
-	Gen         *Gen                     `yaml:"gen"`
-	Cache       *Cache                   `yaml:"cache"`
-	Queue       *Queue                   `yaml:"queue"`
-	Locker      *Locker                  `yaml:"locker"`
-	S3          *S3Config                `yaml:"s3"`
-	HostTenants *map[string]*HostTenants `yaml:"hostTenants"`
-	Extend      interface{}              `yaml:"extend"`
+	Application *Application            `yaml:"application"`
+	Ssl         *Ssl                    `yaml:"ssl"`
+	Logger      *Logger                 `yaml:"logger"`
+	Jwt         *Jwt                    `yaml:"jwt"`
+	Database    *Database               `yaml:"database"`
+	Databases   *map[string]*Database   `yaml:"databases"`
+	Gen         *Gen                    `yaml:"gen"`
+	Cache       *Cache                  `yaml:"cache"`
+	Queue       *Queue                  `yaml:"queue"`
+	Locker      *Locker                 `yaml:"locker"`
+	S3          *S3Config               `yaml:"s3"`
+	HostTenants *map[string]*HostTenant `yaml:"hostTenants"`
+	Extend      interface{}             `yaml:"extend"`
 }
 
 // 多db改造
@@ -83,7 +83,7 @@ func Setup(s source.Source,
 			Cache:       CacheConfig,
 			Queue:       QueueConfig,
 			Locker:      LockerConfig,
-			HostTenants: &HostTenantsConfig,
+			HostTenants: &HostTenantConfig,
 			S3:          S3,
 			Extend:      ExtendConfig,
 		},

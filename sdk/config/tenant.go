@@ -1,11 +1,11 @@
 package config
 
-type HostTenants struct {
+type HostTenant struct {
 	Id  uint64    `yaml:"id"`
 	Key string    `yaml:"key"`
 	Db  *Database `yaml:"db"`
 }
 
 var (
-	HostTenantsConfig = make(map[string]*HostTenants)
+	HostTenantConfig = make(map[string]*HostTenant)
 )
