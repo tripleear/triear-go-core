@@ -9,3 +9,7 @@ type Tenant struct {
 	Id  uint64 `yaml:"id"`
 	Key string `yaml:"key"`
 }
+
+var (
+	HostTenantsConfig = new(HostTenants)
+)
