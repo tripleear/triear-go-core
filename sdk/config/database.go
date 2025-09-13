@@ -20,6 +20,7 @@ type DBResolverConfig struct {
 }
 
 var (
-	DatabaseConfig  = new(Database)
-	DatabasesConfig = make(map[string]*Database)
+	PlatformDatabaseConfig = new(Database)
+	DatabaseConfig         = new(Database)
+	DatabasesConfig        = make(map[string]*Database)
 )

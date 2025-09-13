@@ -15,11 +15,13 @@ import (
 )
 
 type Application struct {
+	platformDb    *gorm.DB
 	dbs           map[string]*gorm.DB
 	casbins       map[string]*casbin.SyncedEnforcer
 	engine        http.Handler
 	crontab       map[string]*cron.Cron
 	mux           sync.RWMutex
+	platformDbMux sync.RWMutex
 	middlewares   map[string]interface{}
 	cache         storage.AdapterCache
 	queue         storage.AdapterQueue
@@ -98,6 +100,30 @@ func (e *Application) GetAppByKey(key string) interface{} {
 	return e.app[key]
 }
 
+// SetPlatformDb 设置对应key的db
+func (e *Application) SetPlatformDb(db *gorm.DB) {
+	e.platformDbMux.Lock()
+	defer e.platformDbMux.Unlock()
+	e.platformDb = db
+}
+
+// GetPlatformDb 获取所有map里的db数据
+func (e *Application) GetPlatformDb() *gorm.DB {
+	e.platformDbMux.Lock()
+	defer e.platformDbMux.Unlock()
+	return e.platformDb
+}
+
+// GetDbByKey 根据key获取db
+func (e *Application) GetDbByKey(key string) *gorm.DB {
+	e.mux.Lock()
+	defer e.mux.Unlock()
+	if db, ok := e.dbs["*"]; ok {
+		return db
+	}
+	return e.dbs[key]
+}
+
 // SetDb 设置对应key的db
 func (e *Application) SetDb(key string, db *gorm.DB) {
 	e.mux.Lock()
@@ -110,16 +136,6 @@ func (e *Application) GetDb() map[string]*gorm.DB {
 	e.mux.Lock()
 	defer e.mux.Unlock()
 	return e.dbs
-}
-
-// GetDbByKey 根据key获取db
-func (e *Application) GetDbByKey(key string) *gorm.DB {
-	e.mux.Lock()
-	defer e.mux.Unlock()
-	if db, ok := e.dbs["*"]; ok {
-		return db
-	}
-	return e.dbs[key]
 }
 
 func (e *Application) SetCasbin(key string, enforcer *casbin.SyncedEnforcer) {
