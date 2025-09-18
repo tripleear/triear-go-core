@@ -54,7 +54,6 @@ type Config struct {
 	Cache            *Cache                  `yaml:"cache"`
 	Queue            *Queue                  `yaml:"queue"`
 	Locker           *Locker                 `yaml:"locker"`
-	S3               *S3Config               `yaml:"s3"`
 	HostTenants      *map[string]*HostTenant `yaml:"hostTenants"`
 	Extend           interface{}             `yaml:"extend"`
 }
@@ -86,7 +85,6 @@ func Setup(s source.Source,
 			Queue:            QueueConfig,
 			Locker:           LockerConfig,
 			HostTenants:      &HostTenantsConfig,
-			S3:               S3,
 			Extend:           ExtendConfig,
 		},
 		callbacks: fs,
